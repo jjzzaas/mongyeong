@@ -2,7 +2,7 @@
   const $=s=>document.querySelector(s);
   const today=()=>new Date().toLocaleDateString('en-CA');
 
-  // One-time migration: current tutorial starts with empty fatigue.
+  // One-time migration: the tutorial begins with no usable fatigue charge.
   if(!localStorage.getItem('projectLiaFatigueRuleV2')){
     localStorage.setItem('projectLiaFatigue','0');
     localStorage.setItem('projectLiaFatigueRuleV2','1');
@@ -27,16 +27,13 @@
   `;
   document.head.appendChild(style);
 
-  // Keep the hidden affinity seed accumulated by each relationship choice.
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('.farewell-choice button[data-choice]');
-    if(!b)return;
-    const current=Number(localStorage.getItem('liaAffinitySeed')||0);
-    const gain=b.dataset.choice==='interest'?2:b.dataset.choice==='thanks'?1:0;
-    localStorage.setItem('liaAffinitySeed',String(current+gain));
-  },true);
+  // Existing relationship choices already write to liaAffinitySeed.
+  // Keep the value hidden until the affinity tile is unlocked later.
+  if(localStorage.getItem('liaAffinitySeed')===null){
+    localStorage.setItem('liaAffinitySeed','0');
+  }
 
-  // Daily rest: one use per local calendar day, 0 -> 100 charge.
+  // Daily rest: one use per local calendar day, charge 0 -> 100.
   const note=document.createElement('div');
   note.className='daily-rest-note';
   document.body.appendChild(note);
@@ -93,7 +90,7 @@
     if(room)room.classList.add('show');
   },true);
 
-  // Two-tap dialogue rule. Override the original typewriter safely after it loads.
+  // Two-tap dialogue rule: first tap completes typing, second tap advances.
   const dialogueBox=$('#dialogue-box');
   const dialogueText=$('#dialogue-text');
   let typing={active:false,full:'',token:0};
@@ -119,33 +116,41 @@
     },true);
   }
 
-  // Association dialogue uses direct text changes; give it the same visual typing rule.
+  // The Hunter Association dialogue uses direct text replacement.
   const associationText=$('#association-text');
   const associationBox=$('.association-dialogue');
   if(associationText&&associationBox){
-    let assocTyping={active:false,full:'',token:0,internal:false};
-    const observer=new MutationObserver(()=>{
-      if(assocTyping.internal)return;
+    let assocTyping={active:false,full:'',token:0};
+    let observer;
+    const watch=()=>observer.observe(associationText,{childList:true,characterData:true,subtree:true});
+    const write=value=>{
+      observer.disconnect();
+      associationText.textContent=value;
+      watch();
+    };
+    observer=new MutationObserver(()=>{
       const full=associationText.textContent;
-      if(!full)return;
+      if(!full||assocTyping.active)return;
       const token=++assocTyping.token;
-      assocTyping.full=full;assocTyping.active=true;assocTyping.internal=true;associationText.textContent='';assocTyping.internal=false;
+      assocTyping.full=full;assocTyping.active=true;
+      write('');
       (async()=>{
+        let shown='';
         for(const ch of full){
           if(token!==assocTyping.token)return;
-          if(!assocTyping.active){assocTyping.internal=true;associationText.textContent=full;assocTyping.internal=false;return}
-          assocTyping.internal=true;associationText.textContent+=ch;assocTyping.internal=false;
+          if(!assocTyping.active){write(full);return}
+          shown+=ch;write(shown);
           await new Promise(r=>setTimeout(r,38));
         }
         if(token===assocTyping.token)assocTyping.active=false;
       })();
     });
-    observer.observe(associationText,{childList:true,characterData:true,subtree:true});
+    watch();
     associationBox.addEventListener('click',e=>{
       if(!assocTyping.active)return;
       e.preventDefault();e.stopImmediatePropagation();
       assocTyping.active=false;assocTyping.token++;
-      assocTyping.internal=true;associationText.textContent=assocTyping.full;assocTyping.internal=false;
+      write(assocTyping.full);
     },true);
   }
 })();
