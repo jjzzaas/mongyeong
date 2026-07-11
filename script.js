@@ -1,219 +1,25 @@
-const titleScreen=document.querySelector('#title-screen');
-const openingScreen=document.querySelector('#opening-screen');
-const blackout=document.querySelector('#blackout');
-const forest=document.querySelector('#forest');
-const narrationCards=[...document.querySelectorAll('.narration-card')];
-const dialogueBox=document.querySelector('#dialogue-box');
-const dialogueText=document.querySelector('#dialogue-text');
-const speaker=document.querySelector('#speaker');
-const nextButton=document.querySelector('#next-button');
-const skipButton=document.querySelector('#skip-button');
-const namePanel=document.querySelector('#name-panel');
-const nameForm=document.querySelector('#name-form');
-const nameInput=document.querySelector('#name-input');
-const nameError=document.querySelector('#name-error');
-const lagoonStage=document.querySelector('#lagoon-stage');
-
-const wait=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
-let sequenceSkipped=false;
-let dialogueStep=0;
-let dialogueBusy=false;
-let narrationResolver=null;
-let playerName=localStorage.getItem('projectLiaPlayerName')||'';
-
-function setAria(element,visible){
-  element.setAttribute('aria-hidden',visible?'false':'true');
-}
-
-async function typeText(text,speed=75){
-  dialogueBusy=true;
-  dialogueText.textContent='';
-  for(const char of text){
-    dialogueText.textContent+=char;
-    await wait(speed);
-  }
-  dialogueBusy=false;
-}
-
-function hideAllNarration(){
-  narrationCards.forEach(card=>{
-    card.classList.remove('show');
-    card.classList.add('fade');
-  });
-}
-
-function waitForNarrationTap(){
-  return new Promise(resolve=>{
-    narrationResolver=resolve;
-  });
-}
-
-function advanceNarration(){
-  if(!narrationResolver)return false;
-  const resolve=narrationResolver;
-  narrationResolver=null;
-  resolve();
-  return true;
-}
-
-async function showNarration(index){
-  const card=narrationCards[index];
-  if(!card)return;
-  hideAllNarration();
-  card.classList.remove('fade');
-  await wait(80);
-  card.classList.add('show');
-  await waitForNarrationTap();
-  card.classList.add('fade');
-  await wait(650);
-}
-
-function showDialogue(){
-  dialogueBox.classList.add('show');
-  setAria(dialogueBox,true);
-}
-
-function hideDialogue(){
-  dialogueBox.classList.remove('show');
-  setAria(dialogueBox,false);
-}
-
-function showNamePanel(){
-  hideDialogue();
-  nameInput.value=playerName;
-  namePanel.classList.add('show');
-  setAria(namePanel,true);
-  setTimeout(()=>nameInput.focus(),300);
-}
-
-function showOpeningCheckpoint(){
-  sequenceSkipped=true;
-  advanceNarration();
-  titleScreen.classList.add('hide');
-  openingScreen.classList.add('active');
-  setAria(openingScreen,true);
-  blackout.classList.add('open');
-  forest.classList.add('awake');
-  hideAllNarration();
-  showDialogue();
-  dialogueStep=0;
-  dialogueText.textContent='여긴... 어디지?';
-}
-
-async function runOpening(){
-  await wait(5000);
-  if(sequenceSkipped)return;
-  titleScreen.classList.add('hide');
-  openingScreen.classList.add('active');
-  setAria(openingScreen,true);
-  await wait(900);
-  await showNarration(0);
-  if(sequenceSkipped)return;
-  await showNarration(1);
-  if(sequenceSkipped)return;
-  blackout.classList.add('open');
-  forest.classList.add('awake');
-  await wait(3000);
-  if(sequenceSkipped)return;
-  showDialogue();
-  dialogueStep=0;
-  await typeText('여긴... 어디지?',90);
-}
-
-async function beginMemorySequence(){
-  hideDialogue();
-  blackout.classList.remove('open');
-  await wait(900);
-  await showNarration(2);
-  await showNarration(3);
-  showNamePanel();
-}
-
-async function beginWalkingSequence(){
-  hideDialogue();
-  forest.classList.add('walking');
-  await wait(700);
-  blackout.classList.remove('open');
-  await wait(1000);
-  await showNarration(4);
-  forest.classList.remove('walking');
-  forest.classList.add('threat');
-  blackout.classList.add('open');
-  await wait(2200);
-  lagoonStage.classList.add('show');
-  setAria(lagoonStage,true);
-  speaker.textContent=playerName.toUpperCase();
-  showDialogue();
-  dialogueStep=3;
-  await typeText('뭐지... 저건?',85);
-}
-
-async function advanceDialogue(){
-  if(dialogueBusy)return;
-  dialogueBusy=true;
-  try{
-    if(dialogueStep===0){
-      dialogueStep=1;
-      await beginMemorySequence();
-    }else if(dialogueStep===1){
-      dialogueStep=2;
-      await typeText('일단... 움직이자.',85);
-    }else if(dialogueStep===2){
-      await beginWalkingSequence();
-    }
-  }finally{
-    dialogueBusy=false;
-  }
-}
-
-openingScreen.addEventListener('click',event=>{
-  if(event.target.closest('#name-panel,#skip-button,#dialogue-box'))return;
-  advanceNarration();
-});
-
-dialogueBox.addEventListener('click',event=>{
-  event.stopPropagation();
-  advanceDialogue();
-});
-
-nextButton.addEventListener('click',event=>{
-  event.stopPropagation();
-  advanceDialogue();
-});
-
-nameForm.addEventListener('submit',async event=>{
-  event.preventDefault();
-  const value=nameInput.value.trim();
-  if(value.length<1){
-    nameError.textContent='이름을 입력해 주세요.';
-    return;
-  }
-  playerName=value;
-  localStorage.setItem('projectLiaPlayerName',playerName);
-  nameError.textContent='';
-  namePanel.classList.remove('show');
-  setAria(namePanel,false);
-  blackout.classList.add('open');
-  speaker.textContent=playerName.toUpperCase();
-  showDialogue();
-  dialogueStep=1;
-  await typeText(`그래... 내 이름은 ${playerName}.`,80);
-});
-
-skipButton.addEventListener('click',event=>{
-  event.stopPropagation();
-  showOpeningCheckpoint();
-});
-
-document.addEventListener('keydown',event=>{
-  if(event.key==='Escape')showOpeningCheckpoint();
-  if((event.key==='Enter'||event.key===' ')&&narrationResolver){
-    event.preventDefault();
-    advanceNarration();
-  }
-});
-
-runOpening().catch(error=>{
-  console.error('Opening sequence error:',error);
-  showOpeningCheckpoint();
-});
+const $=s=>document.querySelector(s),wait=ms=>new Promise(r=>setTimeout(r,ms));
+const titleScreen=$('#title-screen'),openingScreen=$('#opening-screen'),blackout=$('#blackout'),forest=$('#forest'),cards=[...document.querySelectorAll('.narration-card')],dialogueBox=$('#dialogue-box'),dialogueText=$('#dialogue-text'),speaker=$('#speaker'),skipButton=$('#skip-button'),namePanel=$('#name-panel'),nameForm=$('#name-form'),nameInput=$('#name-input'),nameError=$('#name-error'),lagoonStage=$('#lagoon-stage'),battleScreen=$('#battle-screen'),battleMessage=$('#battle-message'),enemyHp=$('#enemy-hp'),enemyHpText=$('#enemy-hp-text'),playerHp=$('#player-hp'),playerHpText=$('#player-hp-text'),battlePlayerName=$('#battle-player-name'),battleActions=$('#battle-actions'),girlStage=$('#girl-stage');
+let sequenceSkipped=false,dialogueStep=0,dialogueBusy=false,narrationResolver=null,playerName=localStorage.getItem('projectLiaPlayerName')||'',pHP=100,eHP=100,turn=0,battleBusy=false;
+const aria=(e,v)=>e.setAttribute('aria-hidden',v?'false':'true');
+async function typeText(t,s=55){dialogueBusy=true;dialogueText.textContent='';for(const c of t){dialogueText.textContent+=c;await wait(s)}dialogueBusy=false}
+function hideNarration(){cards.forEach(c=>{c.classList.remove('show');c.classList.add('fade')})}
+function advanceNarration(){if(!narrationResolver)return false;const r=narrationResolver;narrationResolver=null;r();return true}
+async function showNarration(i){const c=cards[i];if(!c)return;hideNarration();c.classList.remove('fade');await wait(80);c.classList.add('show');await new Promise(r=>narrationResolver=r);c.classList.add('fade');await wait(600)}
+function showDialogue(){dialogueBox.classList.add('show');aria(dialogueBox,true)}function hideDialogue(){dialogueBox.classList.remove('show');aria(dialogueBox,false)}
+function showNamePanel(){hideDialogue();nameInput.value=playerName;namePanel.classList.add('show');aria(namePanel,true);setTimeout(()=>nameInput.focus(),300)}
+function checkpoint(){sequenceSkipped=true;advanceNarration();titleScreen.classList.add('hide');openingScreen.classList.add('active');aria(openingScreen,true);blackout.classList.add('open');forest.classList.add('awake');hideNarration();showDialogue();dialogueStep=0;dialogueText.textContent='여긴... 어디지?'}
+async function runOpening(){await wait(5000);if(sequenceSkipped)return;titleScreen.classList.add('hide');openingScreen.classList.add('active');aria(openingScreen,true);await wait(900);await showNarration(0);if(sequenceSkipped)return;await showNarration(1);if(sequenceSkipped)return;blackout.classList.add('open');forest.classList.add('awake');await wait(2500);showDialogue();dialogueStep=0;await typeText('여긴... 어디지?',80)}
+async function memory(){hideDialogue();blackout.classList.remove('open');await wait(800);await showNarration(2);await showNarration(3);showNamePanel()}
+async function walking(){hideDialogue();forest.classList.add('walking');await wait(600);blackout.classList.remove('open');await wait(900);await showNarration(4);forest.classList.remove('walking');forest.classList.add('threat');blackout.classList.add('open');await wait(1600);lagoonStage.classList.add('show');aria(lagoonStage,true);speaker.textContent=playerName.toUpperCase();showDialogue();dialogueStep=3;await typeText('뭐지... 저건?',70)}
+function updateHP(){playerHp.style.width=pHP+'%';enemyHp.style.width=eHP+'%';playerHpText.textContent=`HP ${pHP} / 100`;enemyHpText.textContent=`HP ${eHP} / 100`}
+function lockActions(v){[...battleActions.querySelectorAll('button')].forEach(b=>b.disabled=v)}
+async function startBattle(){hideDialogue();lagoonStage.classList.remove('show');battlePlayerName.textContent=playerName.toUpperCase();pHP=100;eHP=100;turn=0;updateHP();battleMessage.textContent='놈이 낮게 몸을 웅크렸다. 행동을 선택하세요.';battleScreen.classList.add('show');aria(battleScreen,true)}
+async function battleAction(action){if(battleBusy)return;battleBusy=true;lockActions(true);turn++;if(action==='attack'){const dmg=turn===1?24:18;eHP=Math.max(42,eHP-dmg);battleMessage.textContent=`공격이 적중했다! 라군에게 ${dmg}의 피해.`;updateHP();await wait(1000);if(eHP<=55){battleMessage.textContent='하지만 찢어진 살점이 꿈틀거리며 다시 이어진다…';await wait(1200);eHP=Math.min(82,eHP+28);updateHP()}}else if(action==='guard'){battleMessage.textContent='몸을 낮추고 충격에 대비했다.';await wait(800)}else{battleMessage.textContent='간발의 차로 공격 궤도에서 벗어났다.';await wait(800)}
+let damage=action==='guard'?10:action==='evade'?7:22;pHP=Math.max(0,pHP-damage);battleMessage.textContent=action==='evade'?'완전히 피하지 못했다. 라군의 발톱이 스쳤다.':`라군의 반격! ${damage}의 피해를 입었다.`;updateHP();await wait(1100);if(turn>=4||pHP<=25){await loseBattle();return}battleMessage.textContent='라군은 상처를 회복하며 다시 다가온다.';lockActions(false);battleBusy=false}
+async function loseBattle(){pHP=8;updateHP();battleMessage.textContent='몸이 말을 듣지 않는다. 이대로는… 이길 수 없어.';await wait(1800);battleScreen.classList.remove('show');aria(battleScreen,false);blackout.classList.remove('open');await wait(900);await showNarration(5);await showNarration(6);blackout.classList.add('open');forest.classList.remove('threat');await wait(1700);girlStage.classList.add('show');aria(girlStage,true);speaker.textContent='???';showDialogue();dialogueStep=4;await typeText('괜찮으세요?',80);battleBusy=false}
+async function firstImpression(){hideDialogue();blackout.classList.remove('open');await wait(800);await showNarration(7);blackout.classList.add('open');girlStage.classList.add('show');speaker.textContent='???';showDialogue();dialogueStep=5;await typeText('다친 곳은 없으신가요?',70)}
+async function advanceDialogue(){if(dialogueBusy)return;dialogueBusy=true;try{if(dialogueStep===0){dialogueStep=1;await memory()}else if(dialogueStep===1){dialogueStep=2;await typeText('일단... 움직이자.',70)}else if(dialogueStep===2){await walking()}else if(dialogueStep===3){await startBattle()}else if(dialogueStep===4){await firstImpression()}}finally{dialogueBusy=false}}
+openingScreen.addEventListener('click',e=>{if(e.target.closest('#name-panel,#skip-button,#dialogue-box,#battle-screen'))return;advanceNarration()});dialogueBox.addEventListener('click',e=>{e.stopPropagation();advanceDialogue()});battleActions.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(b)battleAction(b.dataset.action)});
+nameForm.addEventListener('submit',async e=>{e.preventDefault();const v=nameInput.value.trim();if(!v){nameError.textContent='이름을 입력해 주세요.';return}playerName=v;localStorage.setItem('projectLiaPlayerName',v);namePanel.classList.remove('show');aria(namePanel,false);blackout.classList.add('open');speaker.textContent=v.toUpperCase();showDialogue();dialogueStep=1;await typeText(`그래... 내 이름은 ${v}.`,70)});
+skipButton.addEventListener('click',e=>{e.stopPropagation();checkpoint()});document.addEventListener('keydown',e=>{if(e.key==='Escape')checkpoint();if((e.key==='Enter'||e.key===' ')&&narrationResolver){e.preventDefault();advanceNarration()}});runOpening().catch(err=>{console.error(err);checkpoint()});
