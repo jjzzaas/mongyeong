@@ -7,11 +7,6 @@
     if(!button||handled)return;
     handled=true;
 
-    const choice=button.dataset.choice;
-    const current=Number(localStorage.getItem('liaAffinitySeed')||0);
-    const gain=choice==='interest'?2:choice==='thanks'?1:0;
-    localStorage.setItem('liaAffinitySeed',String(current+gain));
-
     setTimeout(()=>{
       const choicePanel=$('.farewell-choice');
       const association=$('.association-scene');
