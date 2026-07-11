@@ -2,7 +2,7 @@ const titleScreen=document.querySelector('#title-screen');
 const openingScreen=document.querySelector('#opening-screen');
 const blackout=document.querySelector('#blackout');
 const forest=document.querySelector('#forest');
-const narrationLines=[...document.querySelectorAll('.narration-line')];
+const narrationCards=[...document.querySelectorAll('.narration-card')];
 const dialogueBox=document.querySelector('#dialogue-box');
 const dialogueText=document.querySelector('#dialogue-text');
 const nextButton=document.querySelector('#next-button');
@@ -20,6 +20,10 @@ async function typeText(text,speed=90){
   }
 }
 
+function hideNarration(){
+  narrationCards.forEach(card=>card.classList.add('fade'));
+}
+
 function showFinalScene(){
   sequenceSkipped=true;
   titleScreen.classList.add('hide');
@@ -27,7 +31,7 @@ function showFinalScene(){
   openingScreen.setAttribute('aria-hidden','false');
   blackout.classList.add('open');
   forest.classList.add('awake');
-  narrationLines.forEach(line=>line.classList.add('fade'));
+  hideNarration();
   dialogueBox.classList.add('show');
   dialogueBox.setAttribute('aria-hidden','false');
   dialogueText.textContent='여긴... 어디지?';
@@ -43,19 +47,17 @@ async function runOpening(){
 
   await wait(900);
 
-  for(let i=0;i<narrationLines.length;i++){
+  for(const card of narrationCards){
     if(sequenceSkipped)return;
-    narrationLines[i].classList.add('show');
-    await wait(i===narrationLines.length-1?1700:1900);
-    if(i<narrationLines.length-1)narrationLines[i].classList.add('fade');
+    card.classList.add('show');
+    await wait(2800);
+    card.classList.add('fade');
+    await wait(850);
   }
 
-  await wait(700);
   if(sequenceSkipped)return;
-
   blackout.classList.add('open');
   forest.classList.add('awake');
-  narrationLines.at(-1)?.classList.add('fade');
 
   await wait(3200);
   if(sequenceSkipped)return;
