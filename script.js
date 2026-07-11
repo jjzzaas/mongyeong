@@ -1,1 +1,80 @@
-const header=document.querySelector('.site-header');window.addEventListener('scroll',()=>header.classList.toggle('scrolled',window.scrollY>20));document.querySelectorAll('[data-scroll]').forEach(btn=>btn.addEventListener('click',()=>document.querySelector(btn.dataset.scroll)?.scrollIntoView({behavior:'smooth'})));const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.14});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));const form=document.querySelector('#register-form');const message=document.querySelector('#form-message');form?.addEventListener('submit',e=>{e.preventDefault();const email=document.querySelector('#email').value.trim();if(!email){message.textContent='이메일 주소를 입력해 주세요.';return}message.textContent='등록되었습니다. 첫 프로토타입 소식을 보내드릴게요.';form.reset()});
+const titleScreen=document.querySelector('#title-screen');
+const openingScreen=document.querySelector('#opening-screen');
+const blackout=document.querySelector('#blackout');
+const forest=document.querySelector('#forest');
+const narrationLines=[...document.querySelectorAll('.narration-line')];
+const dialogueBox=document.querySelector('#dialogue-box');
+const dialogueText=document.querySelector('#dialogue-text');
+const nextButton=document.querySelector('#next-button');
+const skipButton=document.querySelector('#skip-button');
+
+const wait=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
+let sequenceSkipped=false;
+
+async function typeText(text,speed=90){
+  dialogueText.textContent='';
+  for(const char of text){
+    if(sequenceSkipped){dialogueText.textContent=text;return;}
+    dialogueText.textContent+=char;
+    await wait(speed);
+  }
+}
+
+function showFinalScene(){
+  sequenceSkipped=true;
+  titleScreen.classList.add('hide');
+  openingScreen.classList.add('active');
+  openingScreen.setAttribute('aria-hidden','false');
+  blackout.classList.add('open');
+  forest.classList.add('awake');
+  narrationLines.forEach(line=>line.classList.add('fade'));
+  dialogueBox.classList.add('show');
+  dialogueBox.setAttribute('aria-hidden','false');
+  dialogueText.textContent='여긴... 어디지?';
+}
+
+async function runOpening(){
+  await wait(5000);
+  if(sequenceSkipped)return;
+
+  titleScreen.classList.add('hide');
+  openingScreen.classList.add('active');
+  openingScreen.setAttribute('aria-hidden','false');
+
+  await wait(900);
+
+  for(let i=0;i<narrationLines.length;i++){
+    if(sequenceSkipped)return;
+    narrationLines[i].classList.add('show');
+    await wait(i===narrationLines.length-1?1700:1900);
+    if(i<narrationLines.length-1)narrationLines[i].classList.add('fade');
+  }
+
+  await wait(700);
+  if(sequenceSkipped)return;
+
+  blackout.classList.add('open');
+  forest.classList.add('awake');
+  narrationLines.at(-1)?.classList.add('fade');
+
+  await wait(3200);
+  if(sequenceSkipped)return;
+
+  dialogueBox.classList.add('show');
+  dialogueBox.setAttribute('aria-hidden','false');
+  await typeText('여긴... 어디지?',100);
+}
+
+skipButton.addEventListener('click',showFinalScene);
+nextButton.addEventListener('click',()=>{
+  dialogueText.textContent='여긴... 어디지?';
+});
+
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape')showFinalScene();
+});
+
+runOpening().catch(error=>{
+  console.error('Opening sequence error:',error);
+  showFinalScene();
+});
