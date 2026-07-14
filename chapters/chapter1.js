@@ -14,10 +14,10 @@ window.CHAPTER_1=[
 {type:'forest',speaker:'???',text:'가만히 계세요.'},{type:'forest',text:'처음 보는 소녀였다.\n나를 등 뒤로 밀어낸 그녀가 한 손을 들어 올렸다.'},
 {type:'forest',text:'푸른빛이 손끝에 모이더니 활의 형태를 만들었다.\n시위를 당기자 빛으로 된 화살이 조용히 나타났다.'},
 {type:'battle'},
+{type:'reward',exp:35},
 {type:'black',text:'위험해.'},{type:'danger',text:'검은 생명체가 마지막 힘을 짜내듯 소녀에게 달려들었다.\n생각할 틈도 없이 몸이 먼저 움직였다.'},
 {type:'danger',text:'주먹을 꽉 쥐고 놈의 옆구리를 있는 힘껏 내질렀다.\n주먹이 닿은 순간, 검은 몸이 안쪽부터 갈라지며 무너져 내렸다.'},
 {type:'forest',text:'순간, 숲이 조용해졌다.\n나는 천천히 주먹을 내려다봤다.'},{type:'forest',text:'소녀도 쓰러진 생명체와 나를 번갈아 바라보고 있었다.\n아무 말도 하지 못한 채.'},
-{type:'levelup',from:1,to:2},
 {type:'forest',speaker:'???',text:'……방금, 뭘 하신 거예요?'},{type:'forest',speaker:s=>s.playerName,text:'저도…… 모르겠습니다.'},
 {type:'forest',speaker:'???',text:'맨손으로 잡으셨잖아요.'},{type:'forest',speaker:s=>s.playerName,text:'그냥 달려들길래…… 저도 모르게.'},
 {type:'forest',text:'검은 안개가 흩어진 자리에 작은 결정 하나가 떨어졌다.\n검붉은빛이 결정 안쪽에서 희미하게 일렁였다.'},
@@ -33,5 +33,5 @@ window.CHAPTER_1=[
 {type:'gate',speaker:'헌터 2',text:'옆에 계신 분 때문에요?'},{type:'gate',speaker:'하루',text:'네. 자세한 건 들어가서 얘기할게요.'},
 {type:'gate',speaker:'헌터 1',text:'알겠습니다. 고생하셨어요.'},{type:'gate',speaker:'하루',text:'두 분도 수고하세요.'},
 {type:'city',text:'하루와 함께 입구를 지나 도시 안으로 들어섰다.\n숲과는 전혀 다른 소리와 빛이 한꺼번에 밀려왔다.'},
-{type:'chapter',clear:true,chapter:1},{type:'reward',exp:100},{type:'levelup',from:2,to:3}
+{type:'chapter',clear:true,chapter:1},{type:'levelup'}
 ];
