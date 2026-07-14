@@ -17,7 +17,7 @@ window.CHAPTER_3=[
   {type:'black',text:'……이걸 이제 알았다고?'},
   {type:'lodging',speaker:'???',text:'어젯밤 임무가 늦게 끝났거든.\n너무 피곤해서 빈방인 줄 알고 그냥 들어와 잤어.'},
   {type:'lodging',speaker:'???',text:'아, 나는 모모야.\n너는?'},
-  {type:'lodging',speaker:state=>state.playerName,text:'……'+state.playerName+'입니다.'},
+  {type:'lodging',speaker:state=>state.playerName,dynamic:state=>'……'+state.playerName+'입니다.'},
   {type:'lodging',speaker:'모모',text:'응. 잘 부탁해.'},
   {type:'black',text:'잘 부탁할 상황은 아닌 것 같은데…….'},
   {type:'lodging',text:'나는 더 따져 묻고 싶었지만, 어젯밤 세운 계획이 떠올랐다.\n우선 길드로 가서 내가 할 수 있는 일을 찾아야 했다.'},
@@ -27,6 +27,9 @@ window.CHAPTER_3=[
   {type:'lodging',speaker:'모모',text:'나도 길드 소속이니까.\n그리고 혼자 가는 것보다 같이 가는 게 좋잖아.'},
   {type:'lodging',text:'모모는 이미 따라나설 준비를 마친 얼굴이었다.\n거절할 틈조차 주지 않을 생각인 듯했다.'},
   {type:'black',text:'……아침부터 정신이 하나도 없군.'},
-  {type:'lodging-front',text:'나는 숙소 문을 열고 밖으로 나섰다.\n모모는 당연하다는 듯 바로 뒤를 따라왔다.'},
-  {type:'lodging-front',text:'그렇게 나는 정체를 알 수 없는 소녀와 함께 길드로 향했다.'}
+  {type:'lodgingExit',text:'길드로 가려면 숙소에서 나가야 한다.'},
+  {type:'mainLobby',speaker:'모모',text:'길드로 가는 거지?\n나도 같이 갈게.',destination:'guild'},
+  {type:'city',text:'길드 타일을 선택하자 익숙한 거리로 화면이 전환되었다.\n모모는 자연스럽게 내 옆을 따라 걸었다.'},
+  {type:'guild',text:'길드의 문을 열자 넓은 홀이 모습을 드러냈다.\n접수대와 임무 게시판 앞은 아침부터 수많은 사람으로 붐비고 있었다.'},
+  {type:'guild',text:'나는 모모와 함께 안내소가 있는 접수대 쪽으로 향했다.'}
 ];
