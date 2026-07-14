@@ -40,5 +40,13 @@ window.CHAPTER_2=[
 {type:'guild',speaker:'안내원',text:'이름을 바꿨거나 등록 정보에 오류가 생겼을 가능성은 있어요. 하지만……\n정말 아무것도 기억나지 않으세요?'},
 {type:'guild',speaker:s=>s.playerName,text:'네.'},{type:'guild',speaker:'안내원',text:'그럼 지금 머물 곳은 있으세요?'},{type:'guild',speaker:'안내원',text:'돈은요?'},{type:'guild',speaker:'안내원',text:'소지품이나 신분을 증명할 만한 것은요?'},
 {type:'guild',text:'나는 천천히 고개를 저었다.\n안내원은 난처한 표정으로 하루를 바라봤다. 하루도 나를 바라봤다.'},
-{type:'black',text:'나는 기억만 없는 게 아니었다.\n\n집도 없다.\n돈도 없다.\n신분도 없다.\n\n말 그대로—\n\n아무것도 없었다.'}
+{type:'black',text:'나는 기억만 없는 게 아니었다.\n\n집도 없다.\n돈도 없다.\n신분도 없다.\n\n말 그대로—\n\n아무것도 없었다.'},
+{type:'guild',speaker:'안내원',text:'……오늘 하루 정도라면 임시 숙소를 이용하실 수 있어요.'},
+{type:'guild',speaker:s=>s.playerName,text:'임시 숙소요?'},
+{type:'guild',speaker:'안내원',text:'임무를 마치고 늦게 돌아온 헌터나, 부상 때문에 바로 귀가하기 어려운 분들을 위한 곳이에요.\n오래 머물 수는 없지만 오늘 밤까지는 괜찮아요.'},
+{type:'guild',text:'안내원은 말을 마친 뒤 하루를 바라봤다.'},
+{type:'guild',speaker:'안내원',text:'하루 님. 숙소 위치까지 안내해 주실 수 있을까요?'},
+{type:'guild',text:'하루는 잠시 나를 바라봤다.\n곤란하다는 기색보다는, 이대로 혼자 두기는 조금 마음에 걸린다는 표정에 가까웠다.'},
+{type:'guild',speaker:'하루',text:'……네. 그 정도라면 괜찮아요.'},
+{type:'guild',speaker:'하루',text:'길도 복잡하니까 제가 데려다드릴게요.'}
 ];
