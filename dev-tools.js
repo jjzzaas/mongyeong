@@ -27,17 +27,21 @@
       });
       document.body.appendChild(button);
     }
-
-    if(sessionStorage.getItem('mongyeong.devLobby')==='1'){
-      const start=document.querySelector('.title');
-      if(start){
-        sessionStorage.removeItem('mongyeong.devLobby');
-        setTimeout(()=>start.dispatchEvent(new MouseEvent('click',{bubbles:true})),50);
-      }
-    }
   }
 
   const observer=new MutationObserver(decorate);
   observer.observe(app,{childList:true,subtree:true});
   decorate();
+
+  if(window.__MONGYEONG_DEV_LOBBY__===true){
+    sessionStorage.removeItem('mongyeong.devLobby');
+    try{
+      index=0;
+      locked=false;
+      renderScene(scenes[0]);
+    }catch(error){
+      console.error('개발자 로비 진입 실패:',error);
+      app.innerHTML='<main class="screen black"><section class="box"><div class="text">개발자 로비 진입 중 오류가 발생했습니다.</div></section></main>';
+    }
+  }
 })();
