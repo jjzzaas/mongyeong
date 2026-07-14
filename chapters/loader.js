@@ -1,7 +1,8 @@
 (()=>{
   const params=new URLSearchParams(location.search);
   const requested=Number(params.get('chapter')||1);
-  const selected=requested===2?2:1;
+  const selected=[1,2,3].includes(requested)?requested:1;
   window.SELECTED_CHAPTER=selected;
-  window.CHAPTER_1=selected===2?window.CHAPTER_2:window.CHAPTER_1;
+  if(selected===2)window.CHAPTER_1=window.CHAPTER_2;
+  if(selected===3)window.CHAPTER_1=window.CHAPTER_3;
 })();
