@@ -94,5 +94,18 @@ window.CHAPTER_3=[
   {type:'outskirts',text:'마지막 틈까지 메우고 나서야 우리는 손에 묻은 먼지를 털어냈다.\n반나절이면 충분했다.'},
   {type:'outskirts',speaker:'모모',text:'끝났다!\n생각보다 빨리 했지?'},
   {type:'outskirts',speaker:state=>state.playerName,text:'네. 임무 완료군요.'},
-  {type:'missionComplete',title:'외곽 성벽 보수',reward:5000}
+  {type:'missionComplete',title:'외곽 성벽 보수',reward:5000},
+  {type:'outskirts',text:'해는 어느새 성벽 너머로 기울고 있었다.\n길게 늘어진 두 사람의 그림자가 바람에 흔들리는 풀밭 위로 뻗어 있었다.'},
+  {type:'outskirts',speaker:'모모',text:'그럼 돌아갈까?\n배고프다.'},
+  {type:'outskirts',text:'모모는 기지개를 켜며 먼저 몸을 돌렸다.\n나도 도구를 내려놓고 뒤를 따르려던 순간이었다.'},
+  {type:'black',text:'……사각.'},
+  {type:'outskirts',text:'마른 풀을 밟는 듯한 소리가 들렸다.\n바람과는 다른, 분명한 움직임이었다.'},
+  {type:'outskirts',speaker:state=>state.playerName,text:'……잠깐.'},
+  {type:'outskirts',text:'모모가 멈춰 섰다.\n조금 전까지 밝던 표정이 굳어 있었다.'},
+  {type:'outskirts',speaker:'모모',text:'……뭐야?'},
+  {type:'black',text:'사각.\n\n사각.'},
+  {type:'outskirts',text:'이번에는 더 가까웠다.\n성벽 바깥쪽, 길게 자란 풀숲 사이에서 검은 무언가가 천천히 몸을 일으켰다.'},
+  {type:'outskirts',speaker:'모모',text:'……악몽.'},
+  {type:'outskirts',text:'모모의 목소리가 작게 떨렸다.\n나는 본능적으로 몸을 낮추며 눈앞의 존재를 바라봤다.'},
+  {type:'black',text:'임무는 끝났다.\n\n하지만 아직 돌아갈 수는 없었다.'}
 ];
