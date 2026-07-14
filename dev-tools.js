@@ -2,6 +2,19 @@
   const app=document.getElementById('app');
   if(!app)return;
 
+  function goToLobby(){
+    try{
+      const lobbyIndex=scenes.findIndex(scene=>scene.type==='mainLobby');
+      if(lobbyIndex<0)throw new Error('mainLobby 장면을 찾지 못했습니다.');
+      index=lobbyIndex;
+      locked=false;
+      renderScene(scenes[index]);
+    }catch(error){
+      console.error('개발자 로비 진입 실패:',error);
+      alert('개발자 로비 진입 실패');
+    }
+  }
+
   function decorate(){
     document.querySelectorAll('.version,.battle-version').forEach(el=>{
       el.textContent='Ver. 0.9';
@@ -21,9 +34,9 @@
       button.className='dev-lobby-button';
       button.textContent='DEV · 메인 로비';
       button.addEventListener('click',event=>{
+        event.preventDefault();
         event.stopPropagation();
-        sessionStorage.setItem('mongyeong.devLobby','1');
-        location.reload();
+        goToLobby();
       });
       document.body.appendChild(button);
     }
@@ -32,16 +45,4 @@
   const observer=new MutationObserver(decorate);
   observer.observe(app,{childList:true,subtree:true});
   decorate();
-
-  if(window.__MONGYEONG_DEV_LOBBY__===true){
-    sessionStorage.removeItem('mongyeong.devLobby');
-    try{
-      index=0;
-      locked=false;
-      renderScene(scenes[0]);
-    }catch(error){
-      console.error('개발자 로비 진입 실패:',error);
-      app.innerHTML='<main class="screen black"><section class="box"><div class="text">개발자 로비 진입 중 오류가 발생했습니다.</div></section></main>';
-    }
-  }
 })();
