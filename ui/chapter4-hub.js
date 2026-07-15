@@ -1,5 +1,5 @@
 (()=>{
-  const versionText=()=>window.gameVersionText?.()||'Ver. 3.5';
+  const versionText=()=>window.gameVersionText?.()||'Ver. 3.6';
 
   function renderHunterDistrict(){
     const facilities=[
@@ -29,7 +29,7 @@
       <section class="training-route">${stages.slice().reverse().map(stage=>`<div class="training-node-row stage-${stage}"><button class="training-node ${stage===1?'is-open':'is-locked'}" ${stage===1?'':'disabled'} data-stage="${stage}"><span>1-${stage}</span><small>${stage===1?'기초 공격 훈련':'잠김'}</small></button></div>`).join('')}<div class="training-route-line"></div></section>
       <div class="version">${versionText()}</div>
     </main>`,()=>{
-      document.querySelector('.training-node.is-open').onclick=()=>{};
+      document.querySelector('.training-node.is-open').onclick=next;
       const openNode=document.querySelector('.training-node.is-open');
       openNode?.scrollIntoView({block:'end',behavior:'instant'});
     });
