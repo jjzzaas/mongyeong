@@ -45,5 +45,12 @@ window.CHAPTER_4=[
   {type:'mainLobby',speaker:'하루',text:'훈련 센터는 헌터 지구 안쪽에 있어요.\n헌터 지구로 이동하세요.',destination:'village',missionTitle:'CHAPTER 4 · 첫 번째 성장',missionGoal:'헌터 지구의 훈련 센터로 이동하세요.',missionProgress:10},
   {type:'city',text:'헌터 지구에는 훈련 센터와 장비 정비소를 비롯해 헌터들이 이용하는 여러 시설이 모여 있었다.\n나는 하루와 모모를 따라 안쪽으로 들어갔다.'},
   {type:'hunterDistrict'},
-  {type:'trainingMap'}
+  {type:'trainingMap'},
+  {type:'city',speaker:'하루',text:'먼저 가장 기본적인 공격부터 확인할게요.\n복잡하게 생각하지 말고, 제 움직임을 보고 들어오세요.'},
+  {type:'city',speaker:state=>state.playerName,text:'하루 씨를 상대로요?'},
+  {type:'city',speaker:'하루',text:'훈련이니까 괜찮아요.\n제가 멈추라고 할 때까지 계속하세요.'},
+  {type:'black',text:'1-1 — 기초 공격 훈련'},
+  {type:'trainingBattle'},
+  {type:'speedUnlock'},
+  {type:'city',speaker:'하루',text:'처음치고는 나쁘지 않았어요.\n이제 전투 흐름을 조금 더 빠르게 확인할 수 있을 거예요.'}
 ];
