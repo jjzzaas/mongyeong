@@ -1,5 +1,14 @@
 (()=>{
+  const MAX_CHAPTER=100;
+  const UNLOCKED_CHAPTER=4;
   const selected=[1,2,3,4].includes(window.SELECTED_CHAPTER)?window.SELECTED_CHAPTER:1;
+  const chapterTitles={
+    1:'낯선 숲',
+    2:'기록되지 않은 사람',
+    3:'낯선 동침자',
+    4:'첫 번째 성장'
+  };
+
   const adSlot=document.createElement('div');
   adSlot.className='bottom-ad-slot';
   adSlot.setAttribute('aria-hidden','true');
@@ -7,16 +16,29 @@
 
   const map=document.createElement('nav');
   map.className='chapter-map';
-  map.setAttribute('aria-label','챕터 선택');
-  map.innerHTML=`
-    <div class="chapter-map__line"></div>
-    <a class="chapter-map__node ${selected===1?'is-active':''}" href="?chapter=1" aria-label="챕터 1 낯선 숲"><span>1</span><small>낯선 숲</small></a>
-    <a class="chapter-map__node ${selected===2?'is-active':''}" href="?chapter=2" aria-label="챕터 2 기록되지 않은 사람"><span>2</span><small>기록되지 않은 사람</small></a>
-    <a class="chapter-map__node ${selected===3?'is-active':''}" href="?chapter=3" aria-label="챕터 3 낯선 동침자"><span>3</span><small>낯선 동침자</small></a>
-    <a class="chapter-map__node ${selected===4?'is-active':''}" href="?chapter=4" aria-label="챕터 4 첫 번째 성장"><span>4</span><small>첫 번째 성장</small></a>`;
+  map.setAttribute('aria-label','스토리맵');
 
+  const track=document.createElement('div');
+  track.className='chapter-map__track';
+  track.innerHTML=Array.from({length:MAX_CHAPTER},(_,index)=>{
+    const chapter=index+1;
+    const unlocked=chapter<=UNLOCKED_CHAPTER;
+    const active=chapter===selected;
+    const title=chapterTitles[chapter]||'잠김';
+    if(unlocked){
+      return `<a class="chapter-map__node ${active?'is-active':''}" href="?chapter=${chapter}" aria-label="챕터 ${chapter} ${title}"><span>${chapter}</span><small>${title}</small></a>`;
+    }
+    return `<button class="chapter-map__node is-locked" type="button" disabled aria-label="챕터 ${chapter} 잠김"><span>${chapter}</span><small>잠김</small></button>`;
+  }).join('');
+
+  map.appendChild(track);
   document.body.appendChild(adSlot);
   document.body.appendChild(map);
+
+  requestAnimationFrame(()=>{
+    const activeNode=track.querySelector('.is-active');
+    if(activeNode)activeNode.scrollIntoView({behavior:'instant',inline:'center',block:'nearest'});
+  });
 
   function syncVisibility(){
     const hide=Boolean(document.querySelector('.battle-screen,.battle-intro,.title,.main-lobby'));
