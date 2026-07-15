@@ -4,7 +4,7 @@
 
   function apply(){
     document.querySelectorAll('.version,.battle-version').forEach(el=>{
-      if(el.textContent!=='Ver. 2.4')el.textContent='Ver. 2.4';
+      if(el.textContent!=='Ver. 2.5')el.textContent='Ver. 2.5';
     });
     const title=document.querySelector('.chapter-title');
     if(title?.textContent?.trim()==='CHAPTER 1'&&!title.parentElement?.querySelector('.chapter-sub')){
