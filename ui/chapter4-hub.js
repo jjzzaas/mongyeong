@@ -1,5 +1,5 @@
 (()=>{
-  const versionText=()=>window.gameVersionText?.()||'Ver. 3.7';
+  const versionText=()=>window.gameVersionText?.()||'Ver. 3.8';
 
   function renderHunterDistrict(){
     const facilities=[
@@ -12,16 +12,11 @@
   }
 
   function renderTrainingMap(scene){
-    const unlocked=Math.max(1,Math.min(3,scene.unlocked||1));
-    const titles={1:'기초 공격 훈련',2:'모모의 차례',3:'무기 발현'};
+    const unlocked=Math.max(1,Math.min(5,scene.unlocked||1));
+    const titles={1:'기초 공격 훈련',2:'모모의 차례',3:'무기 발현',4:'한손검 훈련',5:'모모의 재도전'};
     const stages=Array.from({length:10},(_,index)=>index+1);
     mount(`<main class="screen training-map-screen"><header class="training-map-header"><div class="training-map-kicker">TRAINING CENTER</div><h1>기초 훈련 과정</h1><p>아래에서 위로 순서대로 진행됩니다.</p></header><section class="training-route">${stages.slice().reverse().map(stage=>`<div class="training-node-row stage-${stage}"><button class="training-node ${stage<=unlocked?'is-open':'is-locked'}" ${stage<=unlocked?'':'disabled'} data-stage="${stage}"><span>1-${stage}</span><small>${titles[stage]||'잠김'}</small></button></div>`).join('')}<div class="training-route-line"></div></section><div class="version">${versionText()}</div></main>`,()=>{
-      document.querySelectorAll('.training-node.is-open').forEach(button=>{
-        button.onclick=()=>{
-          const stage=Number(button.dataset.stage);
-          if(stage===unlocked)next();
-        };
-      });
+      document.querySelectorAll('.training-node.is-open').forEach(button=>{button.onclick=()=>{if(Number(button.dataset.stage)===unlocked)next();};});
       document.querySelector(`.stage-${unlocked} .training-node`)?.scrollIntoView({block:'center',behavior:'instant'});
     });
   }
