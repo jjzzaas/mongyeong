@@ -2,12 +2,12 @@
   const app=document.getElementById('app');
   if(!app)return;
 
-  const VERSION='3.0';
-
   function apply(){
+    const versionText=window.gameVersionText?.()||'Ver. 3.0';
     document.querySelectorAll('.version,.battle-version').forEach(el=>{
-      if(el.textContent!==`Ver. ${VERSION}`)el.textContent=`Ver. ${VERSION}`;
+      if(el.textContent!==versionText)el.textContent=versionText;
     });
+
     const title=document.querySelector('.chapter-title');
     if(title?.textContent?.trim()==='CHAPTER 1'&&!title.parentElement?.querySelector('.chapter-sub')){
       const sub=document.createElement('div');
