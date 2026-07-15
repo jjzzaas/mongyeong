@@ -1,5 +1,5 @@
 (()=>{
-  const VERSION='2.3';
+  const VERSION='2.4';
   const levelTargets={1:3,2:4,3:5};
 
   if(!localStorage.getItem('mongyeong.levelBaselineV23')){
@@ -64,17 +64,30 @@
       {id:'player',name:state.playerName,hp:42,maxHp:42,damage:12,dodge:.10,defense:.20,specialChance:0,specialUsed:false},
       {id:'haru',name:'하루',hp:48,maxHp:48,damage:16,dodge:.15,defense:.18,specialChance:.35,specialUsed:false}
     ];
-    const enemy={name:'정체불명의 생명체',hp:90,maxHp:90,damage:8};
+
+    const enemies=[
+      {id:'enemy1',name:'정체불명의 생명체',hp:90,maxHp:90,damage:8,isBoss:false}
+    ];
+    const maxEnemySlots=5;
+    let selectedEnemyId=enemies[0].id;
     const acted=new Set();
     let enemyActing=false;
 
+    const enemySlots=Array.from({length:maxEnemySlots},(_,index)=>{
+      const enemy=enemies[index];
+      if(!enemy)return `<div class="battle-enemy-card is-empty"><span>적 ${index+1}</span></div>`;
+      return `<button class="battle-enemy-card ${enemy.isBoss?'is-boss':''}" data-enemy="${enemy.id}">
+        ${enemy.isBoss?'<b class="boss-mark">BOSS</b>':''}
+        <strong>${enemy.name}</strong>
+        <div class="hp enemy-hp"><span id="${enemy.id}Hp"></span></div>
+        <em id="${enemy.id}Text">${enemy.hp} / ${enemy.maxHp}</em>
+      </button>`;
+    }).join('');
+
     mount(`<main class="screen battle-screen">
       <div class="battle-controls"><button class="control-btn locked">🔒 ×1</button><button class="control-btn locked">🔒 AUTO</button></div>
-      <div class="battle-layout">
-        <section class="battle-top">
-          <div class="unit-head"><span>${enemy.name}</span><span id="enemyText">${enemy.hp} / ${enemy.maxHp}</span></div>
-          <div class="hp enemy-hp"><span id="enemyHp"></span></div>
-        </section>
+      <div class="battle-layout battle-layout-v24">
+        <section class="enemy-formation" id="enemyFormation">${enemySlots}</section>
         <section class="battle-middle">
           <div class="turn-label" id="turnLabel">아군 턴 · 원하는 순서로 선택</div>
           <div class="battle-line" id="battleLine">행동할 캐릭터 카드를 터치하세요.</div>
@@ -94,11 +107,25 @@
     </main>`,()=>{
       const line=document.getElementById('battleLine');
       const label=document.getElementById('turnLabel');
-      const cards=Array.from(document.querySelectorAll('.battle-character-card[data-ally]'));
+      const allyCards=Array.from(document.querySelectorAll('.battle-character-card[data-ally]'));
+      const enemyCards=Array.from(document.querySelectorAll('.battle-enemy-card[data-enemy]'));
+
+      const livingEnemies=()=>enemies.filter(enemy=>enemy.hp>0);
+      const selectedEnemy=()=>enemies.find(enemy=>enemy.id===selectedEnemyId&&enemy.hp>0)||livingEnemies()[0];
 
       function sync(){
-        document.getElementById('enemyHp').style.width=`${Math.max(0,enemy.hp)/enemy.maxHp*100}%`;
-        document.getElementById('enemyText').textContent=`${Math.max(0,enemy.hp)} / ${enemy.maxHp}`;
+        enemies.forEach(enemy=>{
+          const hp=document.getElementById(`${enemy.id}Hp`);
+          const text=document.getElementById(`${enemy.id}Text`);
+          if(hp)hp.style.width=`${Math.max(0,enemy.hp)/enemy.maxHp*100}%`;
+          if(text)text.textContent=`${Math.max(0,enemy.hp)} / ${enemy.maxHp}`;
+          const card=document.querySelector(`[data-enemy="${enemy.id}"]`);
+          if(card){
+            card.classList.toggle('is-defeated',enemy.hp<=0);
+            card.classList.toggle('is-targeted',enemy.id===selectedEnemyId&&enemy.hp>0);
+            card.disabled=enemy.hp<=0||enemyActing;
+          }
+        });
         allies.forEach(ally=>{
           document.getElementById(`${ally.id}Hp`).style.width=`${Math.max(0,ally.hp)/ally.maxHp*100}%`;
           document.getElementById(`${ally.id}Text`).textContent=`${Math.max(0,ally.hp)} / ${ally.maxHp}`;
@@ -106,7 +133,8 @@
       }
 
       function victory(){
-        cards.forEach(card=>card.disabled=true);
+        allyCards.forEach(card=>card.disabled=true);
+        enemyCards.forEach(card=>card.disabled=true);
         label.textContent='VICTORY';
         line.textContent='화면을 터치하여 계속';
         app.firstElementChild.addEventListener('click',next,{once:true});
@@ -115,66 +143,97 @@
       function resetAllyTurn(){
         acted.clear();
         enemyActing=false;
-        cards.forEach(card=>{
+        allyCards.forEach(card=>{
           card.disabled=false;
           card.classList.remove('is-acted');
           card.querySelector('.battle-card-order').textContent='';
         });
+        enemyCards.forEach(card=>card.disabled=card.classList.contains('is-defeated'));
         label.textContent='아군 턴 · 원하는 순서로 선택';
         line.textContent='행동할 캐릭터 카드를 터치하세요.';
+        sync();
       }
 
       function enemyTurn(){
         enemyActing=true;
-        cards.forEach(card=>card.disabled=true);
+        allyCards.forEach(card=>card.disabled=true);
+        enemyCards.forEach(card=>card.disabled=true);
         label.textContent='적 턴';
-        setTimeout(()=>{
-          const living=allies.filter(ally=>ally.hp>0);
-          const target=living[Math.floor(Math.random()*living.length)];
-          const roll=Math.random();
-          if(roll<target.dodge){
-            line.textContent=`${target.name}이 공격을 회피했습니다!`;
-          }else{
-            const defended=Math.random()<target.defense;
-            const damage=defended?Math.ceil(enemy.damage/2):enemy.damage;
-            target.hp-=damage;
-            line.textContent=defended?`${target.name}이 공격을 방어했습니다. ${damage}의 피해.`:`${target.name}이 ${damage}의 피해를 받았습니다.`;
+        const attackers=livingEnemies();
+        let enemyIndex=0;
+
+        const act=()=>{
+          if(enemyIndex>=attackers.length){
+            setTimeout(resetAllyTurn,700);
+            return;
           }
-          sync();
-          setTimeout(resetAllyTurn,800);
-        },650);
+          const attacker=attackers[enemyIndex++];
+          const livingAllies=allies.filter(ally=>ally.hp>0);
+          const target=livingAllies[Math.floor(Math.random()*livingAllies.length)];
+          label.textContent=`적 ${enemyIndex} · ${attacker.name}`;
+          setTimeout(()=>{
+            const roll=Math.random();
+            if(roll<target.dodge){
+              line.textContent=`${target.name}이 ${attacker.name}의 공격을 회피했습니다!`;
+            }else{
+              const defended=Math.random()<target.defense;
+              const damage=defended?Math.ceil(attacker.damage/2):attacker.damage;
+              target.hp-=damage;
+              line.textContent=defended?`${target.name}이 공격을 방어했습니다. ${damage}의 피해.`:`${target.name}이 ${damage}의 피해를 받았습니다.`;
+            }
+            sync();
+            setTimeout(act,650);
+          },500);
+        };
+        act();
       }
 
       function trySpecial(ally){
         if(ally.specialUsed||ally.specialChance<=0||Math.random()>=ally.specialChance)return false;
         ally.specialUsed=true;
         if(ally.id==='haru'){
-          enemy.hp-=24;
+          livingEnemies().forEach(enemy=>enemy.hp-=24);
           label.textContent='SPECIAL SKILL';
-          line.innerHTML='<strong>하루 — 천체낙하</strong><br>푸른 천체의 빛이 적 전체를 덮쳤다. 24의 광역 피해!';
+          line.innerHTML='<strong>하루 — 천체낙하</strong><br>푸른 천체의 빛이 살아 있는 모든 적을 덮쳤다. 24의 광역 피해!';
+          const nextTarget=livingEnemies()[0];
+          if(nextTarget)selectedEnemyId=nextTarget.id;
           sync();
           return true;
         }
         return false;
       }
 
-      cards.forEach(card=>{
+      enemyCards.forEach(card=>{
+        card.onclick=()=>{
+          if(enemyActing||card.disabled)return;
+          selectedEnemyId=card.dataset.enemy;
+          line.textContent=`${enemies.find(enemy=>enemy.id===selectedEnemyId).name}을 대상으로 지정했습니다.`;
+          sync();
+        };
+      });
+
+      allyCards.forEach(card=>{
         card.onclick=()=>{
           if(enemyActing||card.disabled)return;
           const ally=allies.find(item=>item.id===card.dataset.ally);
-          if(!ally||acted.has(ally.id))return;
+          const target=selectedEnemy();
+          if(!ally||!target||acted.has(ally.id))return;
           acted.add(ally.id);
-          enemy.hp-=ally.damage;
+          target.hp-=ally.damage;
           card.classList.add('is-acted');
           card.disabled=true;
           card.querySelector('.battle-card-order').textContent=`${acted.size}번째 행동`;
-          line.textContent=`${ally.name}의 공격. ${ally.damage}의 피해.`;
+          line.textContent=`${ally.name}이 ${target.name}을 공격했습니다. ${ally.damage}의 피해.`;
+          if(target.hp<=0){
+            const nextTarget=livingEnemies()[0];
+            if(nextTarget)selectedEnemyId=nextTarget.id;
+          }
           sync();
-          if(enemy.hp<=0){victory();return;}
+          if(livingEnemies().length===0){victory();return;}
 
           setTimeout(()=>{
             const special=trySpecial(ally);
-            if(enemy.hp<=0){setTimeout(victory,special?850:0);return;}
+            if(livingEnemies().length===0){setTimeout(victory,special?850:0);return;}
             if(acted.size===allies.length){
               setTimeout(enemyTurn,special?1000:450);
             }else if(!special){
