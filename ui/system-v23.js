@@ -61,7 +61,7 @@
 
   renderBattle=function(){
     const allies=[
-      {id:'player',name:state.playerName,hp:42,maxHp:42,damage:12,dodge:.10,defense:.20,specialChance:0,specialUsed:false},
+      {id:'player',name:state.playerName,hp:42,maxHp:42,damage:8,dodge:.10,defense:.20,specialChance:0,specialUsed:false},
       {id:'haru',name:'하루',hp:48,maxHp:48,damage:16,dodge:.15,defense:.18,specialChance:.35,specialUsed:false}
     ];
 
