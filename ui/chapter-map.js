@@ -22,8 +22,23 @@
 
   document.body.appendChild(adSlot);
   document.body.appendChild(map);
+
+  function syncVisibility(){
+    const hide=Boolean(document.querySelector('.battle-screen,.battle-intro,.title,.main-lobby'));
+    map.classList.toggle('is-hidden',hide);
+    if(hide)adSlot.classList.remove('is-active');
+  }
+
+  const app=document.getElementById('app');
+  if(app){
+    new MutationObserver(syncVisibility).observe(app,{childList:true,subtree:true});
+  }
+  syncVisibility();
+
   window.setBottomAdVisible=enabled=>{
-    adSlot.classList.toggle('is-active',Boolean(enabled));
-    adSlot.setAttribute('aria-hidden',enabled?'false':'true');
+    const blocked=Boolean(document.querySelector('.battle-screen,.battle-intro,.title,.main-lobby'));
+    const active=Boolean(enabled)&&!blocked;
+    adSlot.classList.toggle('is-active',active);
+    adSlot.setAttribute('aria-hidden',active?'false':'true');
   };
 })();
