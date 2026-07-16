@@ -4,7 +4,7 @@
 
   const createDefaultSave=()=>({
     schemaVersion:SAVE_SCHEMA_VERSION,
-    gameVersion:window.GAME_VERSION||'4.1',
+    gameVersion:window.GAME_VERSION||'4.2',
     player:{
       name:'여행자',
       level:1,
