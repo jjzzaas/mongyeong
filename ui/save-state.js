@@ -4,7 +4,7 @@
 
   const createDefaultSave=()=>({
     schemaVersion:SAVE_SCHEMA_VERSION,
-    gameVersion:window.GAME_VERSION||'4.0',
+    gameVersion:window.GAME_VERSION||'4.1',
     player:{
       name:'여행자',
       level:1,
@@ -45,10 +45,35 @@
     };
   };
 
+  const readSave=()=>{
+    try{
+      const raw=localStorage.getItem(STORAGE_KEY);
+      return raw?normalizeSave(JSON.parse(raw)):null;
+    }catch(error){
+      console.warn('[save] 저장 데이터를 읽지 못했습니다.',error);
+      return null;
+    }
+  };
+
+  const writeSave=value=>{
+    try{
+      const normalized=normalizeSave(value);
+      normalized.gameVersion=window.GAME_VERSION||normalized.gameVersion;
+      normalized.savedAt=new Date().toISOString();
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(normalized));
+      return normalized;
+    }catch(error){
+      console.warn('[save] 자동저장에 실패했습니다.',error);
+      return null;
+    }
+  };
+
   window.MONGYEONG_SAVE={
     STORAGE_KEY,
     SAVE_SCHEMA_VERSION,
     createDefaultSave,
-    normalizeSave
+    normalizeSave,
+    readSave,
+    writeSave
   };
 })();
