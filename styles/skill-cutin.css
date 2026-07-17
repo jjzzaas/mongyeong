@@ -1,0 +1,45 @@
+.brief-skill-cutin{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:rgba(2,5,12,.76);
+  backdrop-filter:blur(4px);
+  animation:briefSkillIn .22s ease-out both;
+  pointer-events:auto;
+}
+.brief-skill-cutin__panel{
+  width:min(520px,92vw);
+  padding:28px 24px 26px;
+  border:1px solid rgba(142,203,255,.55);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(8,18,34,.97),rgba(4,9,19,.97));
+  box-shadow:0 0 36px rgba(67,159,255,.28),inset 0 0 24px rgba(92,178,255,.08);
+  text-align:center;
+}
+.brief-skill-cutin__panel span{
+  display:block;
+  margin-bottom:10px;
+  font-size:13px;
+  letter-spacing:.22em;
+  color:#9dd6ff;
+}
+.brief-skill-cutin__panel strong{
+  display:block;
+  font-size:clamp(24px,7vw,34px);
+  line-height:1.25;
+  color:#fff;
+  text-shadow:0 0 18px rgba(117,195,255,.65);
+}
+.brief-skill-cutin__panel p{
+  margin:18px 0 0;
+  font-size:16px;
+  line-height:1.7;
+  color:rgba(255,255,255,.86);
+}
+.brief-skill-cutin.is-leaving{animation:briefSkillOut .22s ease-in both}
+.skill-cutin-active .battle-screen button{pointer-events:none}
+@keyframes briefSkillIn{from{opacity:0;transform:scale(1.025)}to{opacity:1;transform:scale(1)}}
+@keyframes briefSkillOut{from{opacity:1}to{opacity:0}}
