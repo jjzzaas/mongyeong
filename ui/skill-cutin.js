@@ -1,9 +1,7 @@
 (()=>{
   const nativeSetTimeout=window.setTimeout.bind(window);
   const CUTIN_DURATION=1900;
-  const MIN_SPECIAL_DELAY=2050;
-  let activeUntil=0;
-  let lastKey='';
+  let activeKey='';
 
   const skillDetails={
     '모모 — 다크사이트':'3턴 동안 적의 공격 대상이 되지 않습니다.\n효과가 유지되는 동안 행동할 수 없습니다.',
@@ -28,14 +26,12 @@
     const name=bannerName||lineStrong||'SPECIAL SKILL';
     const rawDetail=line?.textContent?.replace(name,'').trim();
     const detail=skillDetails[name]||rawDetail||'스킬 효과가 발동했습니다.';
-    return {name,detail};
+    return {name,detail,key:`${name}|${detail}`};
   }
 
   function showCutin(skill){
-    const key=`${skill.name}|${skill.detail}`;
-    if(key===lastKey&&Date.now()<activeUntil)return;
-    lastKey=key;
-    activeUntil=Date.now()+CUTIN_DURATION;
+    if(skill.key===activeKey)return;
+    activeKey=skill.key;
 
     document.querySelector('.brief-skill-cutin')?.remove();
     const overlay=document.createElement('div');
@@ -56,18 +52,15 @@
     },CUTIN_DURATION);
   }
 
-  const observer=new MutationObserver(()=>{
+  function syncCutin(){
     const skill=readSpecial();
-    if(skill)showCutin(skill);
-  });
-  observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true});
-
-  window.setTimeout=function(callback,delay=0,...args){
-    const skill=readSpecial();
-    if(skill){
-      showCutin(skill);
-      delay=Math.max(Number(delay)||0,MIN_SPECIAL_DELAY);
+    if(!skill){
+      activeKey='';
+      return;
     }
-    return nativeSetTimeout(callback,delay,...args);
-  };
+    showCutin(skill);
+  }
+
+  const observer=new MutationObserver(syncCutin);
+  observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true});
 })();
