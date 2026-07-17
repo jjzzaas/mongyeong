@@ -8,17 +8,17 @@
     {type:'city',speaker:'하루',text:'저는 내일부터 다시 임무를 나가야 해요.\n두 분은 오늘 배운 걸 잊지 않도록 개인 훈련을 계속하세요.'},
     {type:'relationshipChoice',screenType:'city',speaker:'하루',text:'떠나기 전, 하루에게 어떤 말을 건넬까?',affinityKey:'haruAffinity',choices:[
       {text:'오늘 정말 감사했습니다.',affinity:2,response:'……별말씀을요.\n두 분이 포기하지 않았으니 가능한 일이었어요.'},
-      {text:'내일부터도 꾸준히 해볼게요.',affinity:1,response:'네. 무리하지 말고, 오늘 배운 것부터 차근차근 익히세요.'},
-      {text:'생각보다 너무 힘들었어.',affinity:-1,response:'그만큼 지금 부족하다는 뜻이겠죠.\n그래도 끝까지 해낸 건 잘하셨어요.'}
+      {text:'내일부터도 꾸준히 해보겠습니다.',affinity:1,response:'네. 무리하지 말고, 오늘 배운 것부터 차근차근 익히세요.'},
+      {text:'생각보다 많이 힘들었습니다.',affinity:-1,response:'그만큼 지금 부족하다는 뜻이겠죠.\n그래도 끝까지 해낸 건 잘하셨어요.'}
     ]},
     {type:'relationshipResponse',screenType:'city',speaker:'하루',fallback:'수고하셨어요. 오늘은 푹 쉬세요.'},
     {type:'city',text:'하루는 짧게 고개를 끄덕인 뒤 훈련장을 떠났다.\n넓어진 훈련장에는 나와 모모만 남았다.'},
     {type:'city',speaker:'모모',text:'……오늘도 결국 졌네.'},
     {type:'city',text:'모모는 힘없이 웃었지만, 외곽에서 보았던 주눅 든 표정과는 조금 달랐다.'},
     {type:'relationshipChoice',screenType:'city',speaker:'모모',text:'모모에게 어떤 말을 건넬까?',affinityKey:'momoAffinity',choices:[
-      {text:'같이 두려움을 극복하고 강해지자.',affinity:2,response:'……같이?\n응. 혼자가 아니라면, 조금은 해볼 수 있을 것 같아.'},
-      {text:'오늘은 아까보다 훨씬 나았어.',affinity:1,response:'정말……?\n나도 조금은 달라진 걸까.'},
-      {text:'다음에는 더 오래 버텨야 해.',affinity:-1,response:'……알아.\n다음에는 더 노력할게.'}
+      {text:'같이 두려움을 극복하고 강해져요.',affinity:2,response:'……같이?\n응. 혼자가 아니라면, 조금은 해볼 수 있을 것 같아.'},
+      {text:'오늘은 아까보다 훨씬 나았어요.',affinity:1,response:'정말……?\n나도 조금은 달라진 걸까.'},
+      {text:'다음에는 더 오래 버텨봐요.',affinity:-1,response:'……알아.\n다음에는 더 노력할게.'}
     ]},
     {type:'relationshipResponse',screenType:'city',speaker:'모모',fallback:'……응. 다음에는 더 잘해볼게.'},
     {type:'city',text:'모모는 먼저 숙소로 돌아가겠다며 훈련장을 나섰다.\n나 역시 무거운 몸을 이끌고 뒤늦게 숙소로 향했다.'},
