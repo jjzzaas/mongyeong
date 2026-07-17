@@ -1,6 +1,6 @@
 (()=>{
-  const VERSION='2.8';
-  const levelLimits={1:3,2:4,3:5};
+  const VERSION='4.6';
+  const levelLimits={1:2,2:3,3:4,4:5};
 
   function normalize(array){
     if(!Array.isArray(array))return;
@@ -14,19 +14,21 @@
     }
   }
 
-  const uniqueArrays=new Set([window.CHAPTER_1,window.CHAPTER_2,window.CHAPTER_3]);
+  const uniqueArrays=new Set([window.CHAPTER_1,window.CHAPTER_2,window.CHAPTER_3,window.CHAPTER_4]);
   uniqueArrays.forEach(normalize);
 
   function renderChapterComplete(scene){
     const chapter=Number(scene.chapter||window.SELECTED_CHAPTER||state.chapter||1);
-    const limit=levelLimits[chapter]||state.level+1;
-    const before=Math.min(state.level,limit);
+    const limit=levelLimits[chapter]||Math.max(1,state.level+1);
+    const expectedBefore=Math.max(1,limit-1);
+    const alreadyReached=state.level>=limit;
+    const before=alreadyReached?limit:expectedBefore;
 
     mount(`<main class="screen chapter cinematic-chapter">
       <div class="chapter-title">CHAPTER ${chapter} CLEAR</div>
       ${scene.title?`<div class="chapter-sub">${scene.title}</div>`:''}
       <div class="hint">터치하여 계속</div>
-      <div class="version">Ver. ${VERSION}</div>
+      <div class="version">${window.gameVersionText?.()||`Ver. ${VERSION}`}</div>
     </main>`,()=>{
       app.firstElementChild.onclick=()=>{
         state.exp=100;
@@ -38,21 +40,20 @@
             <div class="text" style="margin-top:18px">챕터 경험치가 모두 채워졌습니다.</div>
           </section>
           <div class="hint">터치하여 계속</div>
-          <div class="version">Ver. ${VERSION}</div>
+          <div class="version">${window.gameVersionText?.()||`Ver. ${VERSION}`}</div>
         </main>`,()=>{
           app.firstElementChild.onclick=()=>{
-            const canLevel=before<limit;
-            state.level=canLevel?before+1:limit;
+            state.level=limit;
             state.exp=0;
             localStorage.setItem(`mongyeong.chapterClear.${chapter}`,'1');
             save();
             mount(`<main class="screen status ${levelTheme(state.level)}">
               <section class="box">
-                <div class="chapter-title">${canLevel?'LEVEL UP':'LEVEL LIMIT'}</div>
-                <div class="text" style="margin-top:18px">${canLevel?`Lv. ${before} → Lv. ${state.level}`:`현재 챕터 최대 레벨 Lv. ${limit}`}</div>
+                <div class="chapter-title">${alreadyReached?'LEVEL LIMIT':'LEVEL UP'}</div>
+                <div class="text" style="margin-top:18px">${alreadyReached?`현재 챕터 최대 레벨 Lv. ${limit}`:`Lv. ${before} → Lv. ${state.level}`}</div>
               </section>
               <div class="hint">터치하여 계속</div>
-              <div class="version">Ver. ${VERSION}</div>
+              <div class="version">${window.gameVersionText?.()||`Ver. ${VERSION}`}</div>
             </main>`,()=>app.firstElementChild.onclick=next);
           };
         });
