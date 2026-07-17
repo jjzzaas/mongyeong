@@ -23,9 +23,10 @@
 
     const bannerName=banner?.querySelector('strong')?.textContent?.trim();
     const lineStrong=line?.querySelector('strong')?.textContent?.trim();
-    const name=bannerName||lineStrong||'SPECIAL SKILL';
-    const rawDetail=line?.textContent?.replace(name,'').trim();
-    const detail=skillDetails[name]||rawDetail||'스킬 효과가 발동했습니다.';
+    const name=bannerName||lineStrong||'';
+    if(!skillDetails[name])return null;
+
+    const detail=skillDetails[name];
     return {name,detail,key:`${name}|${detail}`};
   }
 
