@@ -9,6 +9,12 @@
   const titleScreen=root.querySelector('.screen.title');
   if(!titleScreen)return;
 
+  titleScreen.addEventListener('click',event=>{
+    if(event.target.closest('button'))return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  },true);
+
   const startText=titleScreen.querySelector('.start');
   if(startText)startText.textContent='저장된 기록이 있습니다';
 
