@@ -17,7 +17,7 @@
     {type:'city',text:'모모는 힘없이 웃었지만, 외곽에서 보았던 주눅 든 표정과는 조금 달랐다.'},
     {type:'relationshipChoice',screenType:'city',speaker:'모모',text:'모모에게 어떤 말을 건넬까?',affinityKey:'momoAffinity',choices:[
       {text:'같이 두려움을 극복하고 강해져요.',affinity:2,response:'……같이?\n응. 혼자가 아니라면, 조금은 해볼 수 있을 것 같아.'},
-      {text:'오늘은 아까보다 훨씬 나았어요.',affinity:1,response:'정말……?\n나도 조금은 달라진 걸까.'},
+      {text:'아까보다 훨씬 나았어요.',affinity:1,response:'정말……?\n나도 조금은 달라진 걸까.'},
       {text:'다음에는 더 오래 버텨봐요.',affinity:-1,response:'……알아.\n다음에는 더 노력할게.'}
     ]},
     {type:'relationshipResponse',screenType:'city',speaker:'모모',fallback:'……응. 다음에는 더 잘해볼게.'},
