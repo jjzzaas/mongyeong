@@ -4,7 +4,9 @@
 
   const DEV_PARAM='dev';
   const BACKUP_KEY='mongyeong.devBackup';
-  const isDev=new URLSearchParams(location.search).get(DEV_PARAM)==='1';
+  const params=new URLSearchParams(location.search);
+  const isDev=params.get(DEV_PARAM)==='1';
+  const requestedChapter=Number(params.get('chapter')||1);
   let tapCount=0;
   let tapTimer=null;
 
@@ -38,6 +40,21 @@
     url.searchParams.set('chapter',String(chapter));
     url.searchParams.set(DEV_PARAM,'1');
     return url.toString();
+  }
+
+  function launchChapter(chapter){
+    const chapterScenes=window[`CHAPTER_${chapter}`];
+    if(!Array.isArray(chapterScenes)||chapterScenes.length===0)return;
+    window.SELECTED_CHAPTER=chapter;
+    state.chapter=chapter;
+    state.level=chapter;
+    state.exp=0;
+    scenes=chapterScenes;
+    index=0;
+    locked=false;
+    const firstScene=scenes[0];
+    if(firstScene?.type==='name')renderName();
+    else renderScene(firstScene);
   }
 
   function closeMenu(){
@@ -103,6 +120,7 @@
     badge.onclick=openMenu;
     document.body.appendChild(badge);
     window.addEventListener('pagehide',restoreStorage);
+    if([1,2,3,4,5].includes(requestedChapter))launchChapter(requestedChapter);
   }
 
   document.addEventListener('click',event=>{
