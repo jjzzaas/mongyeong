@@ -1,0 +1,60 @@
+(()=>{
+  const versionText=()=>window.gameVersionText?.()||'Ver. 5.6';
+  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+
+  function renderSoloTraining(scene){
+    const stage=Number(scene.stage||6);
+    const type=scene.enemyType==='agile'?'agile':'heavy';
+    const enemy=type==='heavy'
+      ?{name:'강화 훈련체',hp:42+(stage-6)*6,maxHp:42+(stage-6)*6,damage:7+(stage-6)}
+      :{name:'기동 훈련체',hp:30+(stage-6)*5,maxHp:30+(stage-6)*5,damage:5+(stage-6)};
+    const player={name:state.playerName,hp:52,maxHp:52,damage:type==='heavy'?14:12};
+    let turn='player',ended=false,speed=1;
+
+    mount(`<main class="screen battle-intro"><div class="battle-start-flash">BATTLE START</div><div class="battle-start-sub">기초 훈련 1-${stage} · ${enemy.name}</div><div class="version">${versionText()}</div></main>`,()=>setTimeout(start,900));
+
+    function start(){
+      mount(`<main class="screen battle-screen training-battle-screen"><div class="battle-controls"><button id="soloSpeed" class="control-btn">×1</button><button class="control-btn locked" disabled>🔒 AUTO</button></div><div class="battle-layout battle-layout-v24"><section class="enemy-formation chapter3-enemies"><button class="battle-enemy-card is-targeted" data-solo-enemy><strong>${enemy.name}</strong><div class="hp enemy-hp"><span id="soloEnemyHp"></span></div><em id="soloEnemyText"></em></button>${[2,3,4,5].map(slot=>`<div class="battle-enemy-card is-empty"><span>적 ${slot}</span></div>`).join('')}</section><section class="battle-middle"><div class="turn-label" id="soloTurnLabel">아군 턴 · 행동할 캐릭터 선택</div><div class="battle-line" id="soloBattleLine">주인공 카드를 터치하세요.</div></section><section class="battle-cards"><button class="battle-character-card" data-solo-player><span class="battle-card-order"></span><strong>${player.name}</strong><small>한손검 · 피해 ${player.damage}</small><div class="hp"><span id="soloPlayerHp"></span></div><em id="soloPlayerText"></em></button>${[2,3,4].map(slot=>`<div class="battle-character-card is-locked"><strong>슬롯 ${slot}</strong><small>파티원 미참가</small></div>`).join('')}</section></div><div class="battle-version">${versionText()}</div></main>`,()=>{
+        const card=document.querySelector('[data-solo-player]');
+        const target=document.querySelector('[data-solo-enemy]');
+        const line=document.getElementById('soloBattleLine');
+        const label=document.getElementById('soloTurnLabel');
+        const speedBtn=document.getElementById('soloSpeed');
+        const sync=()=>{
+          document.getElementById('soloEnemyHp').style.width=`${Math.max(0,enemy.hp)/enemy.maxHp*100}%`;
+          document.getElementById('soloPlayerHp').style.width=`${Math.max(0,player.hp)/player.maxHp*100}%`;
+          document.getElementById('soloEnemyText').textContent=`${Math.max(0,enemy.hp)} / ${enemy.maxHp}`;
+          document.getElementById('soloPlayerText').textContent=`${Math.max(0,player.hp)} / ${player.maxHp}`;
+        };
+        const finish=async win=>{
+          if(ended)return; ended=true; card.disabled=true; target.disabled=true;
+          label.textContent=win?'TRAINING CLEAR':'TRAINING FAILED';
+          line.textContent=win?`기초 훈련 1-${stage}을 클리어했습니다.`:'훈련을 다시 시작합니다.';
+          await wait(650);
+          if(win){line.textContent+=' 화면을 터치하여 계속';app.firstElementChild.addEventListener('click',next,{once:true});}
+          else renderSoloTraining(scene);
+        };
+        const enemyTurn=async()=>{
+          turn='enemy';card.disabled=true;label.textContent=`상대 턴 · ${enemy.name}`;
+          await wait(Math.max(160,430/speed));
+          player.hp-=enemy.damage;line.textContent=`${enemy.name}의 공격. ${enemy.damage}의 피해.`;sync();
+          if(player.hp<=0){finish(false);return;}
+          await wait(Math.max(180,520/speed));turn='player';card.disabled=false;card.classList.remove('is-acted');card.querySelector('.battle-card-order').textContent='';label.textContent='아군 턴 · 행동할 캐릭터 선택';line.textContent='주인공 카드를 터치하세요.';
+        };
+        card.onclick=async()=>{
+          if(turn!=='player'||ended)return;turn='busy';card.disabled=true;card.classList.add('is-acted');card.querySelector('.battle-card-order').textContent='1번째 행동';enemy.hp-=player.damage;line.textContent=`${player.name}이 한손검으로 공격했습니다. ${player.damage}의 피해.`;sync();
+          if(enemy.hp<=0){await wait(400);finish(true);return;}
+          await wait(Math.max(160,380/speed));enemyTurn();
+        };
+        speedBtn.onclick=()=>{speed=speed===1?2:speed===2?3:1;speedBtn.textContent=`×${speed}`;};
+        sync();
+      });
+    }
+  }
+
+  const previousRenderScene=renderScene;
+  renderScene=function(scene){
+    if(scene.type==='soloTrainingBattle'){renderSoloTraining(scene);return;}
+    previousRenderScene(scene);
+  };
+})();
