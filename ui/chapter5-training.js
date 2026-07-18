@@ -1,8 +1,9 @@
 (()=>{
-  const versionText=()=>window.gameVersionText?.()||'Ver. 5.8';
+  const versionText=()=>window.gameVersionText?.()||'Ver. 5.9';
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const SPEED_KEY='mongyeong.battleSpeed';
   const AUTO_KEY='mongyeong.battleAuto';
+  const AUTO_UNLOCK_KEY='mongyeong.autoUnlocked';
   const getSpeed=()=>[1,2,3].includes(Number(localStorage.getItem(SPEED_KEY)))?Number(localStorage.getItem(SPEED_KEY)):1;
   const getAuto=()=>localStorage.getItem(AUTO_KEY)==='1';
 
@@ -13,13 +14,16 @@
       ?{name:'강화 훈련체',hp:42+(stage-6)*6,maxHp:42+(stage-6)*6,damage:7+(stage-6)}
       :{name:'기동 훈련체',hp:30+(stage-6)*5,maxHp:30+(stage-6)*5,damage:5+(stage-6)};
     const player={name:state.playerName,hp:52,maxHp:52,damage:type==='heavy'?14:12};
-    const autoUnlocked=localStorage.getItem('mongyeong.autoUnlocked')==='1';
-    let turn='player',ended=false,speed=getSpeed(),auto=autoUnlocked&&getAuto(),autoTimer=null;
+
+    // 챕터 4의 기초 훈련을 마치고 진입하는 구간이므로 챕터 5에서는 오토를 확정 해금한다.
+    localStorage.setItem(AUTO_UNLOCK_KEY,'1');
+    const autoUnlocked=true;
+    let turn='player',ended=false,speed=getSpeed(),auto=getAuto(),autoTimer=null;
 
     mount(`<main class="screen battle-intro"><div class="battle-start-flash">BATTLE START</div><div class="battle-start-sub">기초 훈련 1-${stage} · ${enemy.name}</div><div class="version">${versionText()}</div></main>`,()=>setTimeout(start,900));
 
     function start(){
-      mount(`<main class="screen battle-screen training-battle-screen"><div class="battle-controls"><button id="soloSpeed" class="control-btn">×${speed}</button><button id="soloAuto" class="control-btn ${autoUnlocked?'':'locked'}" ${autoUnlocked?'':'disabled'}>${autoUnlocked?(auto?'AUTO ON':'AUTO OFF'):'🔒 AUTO'}</button></div><div class="battle-layout battle-layout-v24"><section class="enemy-formation chapter3-enemies"><button class="battle-enemy-card is-targeted" data-solo-enemy><strong>${enemy.name}</strong><div class="hp enemy-hp"><span id="soloEnemyHp"></span></div><em id="soloEnemyText"></em></button>${[2,3,4,5].map(slot=>`<div class="battle-enemy-card is-empty"><span>적 ${slot}</span></div>`).join('')}</section><section class="battle-middle"><div class="turn-label" id="soloTurnLabel">아군 턴 · 행동할 캐릭터 선택</div><div class="battle-line" id="soloBattleLine">${auto?'자동 전투가 진행됩니다.':'주인공 카드를 터치하세요.'}</div></section><section class="battle-cards"><button class="battle-character-card" data-solo-player><span class="battle-card-order"></span><strong>${player.name}</strong><small>한손검 · 피해 ${player.damage}</small><div class="hp"><span id="soloPlayerHp"></span></div><em id="soloPlayerText"></em></button>${[2,3,4].map(slot=>`<div class="battle-character-card is-locked"><strong>슬롯 ${slot}</strong><small>파티원 미참가</small></div>`).join('')}</section></div><div class="battle-version">${versionText()}</div></main>`,()=>{
+      mount(`<main class="screen battle-screen training-battle-screen"><div class="battle-controls"><button id="soloSpeed" class="control-btn">×${speed}</button><button id="soloAuto" class="control-btn">${auto?'AUTO ON':'AUTO OFF'}</button></div><div class="battle-layout battle-layout-v24"><section class="enemy-formation chapter3-enemies"><button class="battle-enemy-card is-targeted" data-solo-enemy><strong>${enemy.name}</strong><div class="hp enemy-hp"><span id="soloEnemyHp"></span></div><em id="soloEnemyText"></em></button>${[2,3,4,5].map(slot=>`<div class="battle-enemy-card is-empty"><span>적 ${slot}</span></div>`).join('')}</section><section class="battle-middle"><div class="turn-label" id="soloTurnLabel">아군 턴 · 행동할 캐릭터 선택</div><div class="battle-line" id="soloBattleLine">${auto?'자동 전투가 진행됩니다.':'주인공 카드를 터치하세요.'}</div></section><section class="battle-cards"><button class="battle-character-card" data-solo-player><span class="battle-card-order"></span><strong>${player.name}</strong><small>한손검 · 피해 ${player.damage}</small><div class="hp"><span id="soloPlayerHp"></span></div><em id="soloPlayerText"></em></button>${[2,3,4].map(slot=>`<div class="battle-character-card is-locked"><strong>슬롯 ${slot}</strong><small>파티원 미참가</small></div>`).join('')}</section></div><div class="battle-version">${versionText()}</div></main>`,()=>{
         const card=document.querySelector('[data-solo-player]');
         const target=document.querySelector('[data-solo-enemy]');
         const line=document.getElementById('soloBattleLine');
@@ -63,7 +67,7 @@
           speedBtn.textContent=`×${speed}`;
           queueAuto();
         };
-        if(autoUnlocked)autoBtn.onclick=()=>{
+        autoBtn.onclick=()=>{
           auto=!auto;
           localStorage.setItem(AUTO_KEY,auto?'1':'0');
           autoBtn.textContent=auto?'AUTO ON':'AUTO OFF';
