@@ -34,13 +34,27 @@
     next();
   }
 
+  function renderSingleDialogue(screenType,speaker,text,onContinue){
+    mount(`<main class="screen ${screenType}"><section class="box"><div class="speaker">${speaker}</div><div class="text">${text.replace(/\n/g,'<br>')}</div></section><div class="hint">터치하여 계속</div><div class="version">${versionText()}</div></main>`,()=>{
+      app.firstElementChild.onclick=onContinue;
+    });
+  }
+
   window.renderRelationshipResponse=function(scene){
     const previous=scenes[index-1];
     const playerLine=previous?.selectedPlayerLine||'';
     const response=previous?.selectedResponse||scene.fallback;
     const screenType=scene.screenType||'lodging-front';
-    const playerDialogue=playerLine?`<div class="speaker">주인공</div><div class="text">${playerLine.replace(/\n/g,'<br>')}</div>`:'';
-    mount(`<main class="screen ${screenType}"><section class="box">${playerDialogue}<div class="speaker">${scene.speaker||'하루'}</div><div class="text">${response.replace(/\n/g,'<br>')}</div></section><div class="hint">터치하여 계속</div><div class="version">${versionText()}</div></main>`,()=>app.firstElementChild.onclick=next);
+    const responseSpeaker=scene.speaker||'하루';
+
+    if(playerLine){
+      renderSingleDialogue(screenType,'주인공',playerLine,()=>{
+        renderSingleDialogue(screenType,responseSpeaker,response,next);
+      });
+      return;
+    }
+
+    renderSingleDialogue(screenType,responseSpeaker,response,next);
   };
 
   const originalRenderScene=renderScene;
