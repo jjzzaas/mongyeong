@@ -4,6 +4,8 @@
 
   const saveApi=window.MONGYEONG_SAVE;
   const blockedSelectors='.title,.main-lobby,.battle-screen,.battle-intro,.reward-screen,.status,.cinematic-chapter,.relationship-choice,.relationship-unlock,.chapter-complete-screen';
+  const MAX_CHAPTER=100;
+  const CHAPTER_GROUP_SIZE=25;
 
   function currentScene(){
     try{return Array.isArray(scenes)&&typeof index==='number'?scenes[index]:null;}catch{return null;}
@@ -12,7 +14,11 @@
   function currentChapter(){
     const saved=saveApi?.readSave?.();
     const scene=currentScene();
-    return Math.max(1,Number(state?.chapter||scene?.chapter||saved?.progress?.chapter||1));
+    return Math.max(1,Math.min(MAX_CHAPTER,Number(state?.chapter||scene?.chapter||saved?.progress?.chapter||1)));
+  }
+
+  function completedChapter(){
+    return Math.max(0,currentChapter()-1);
   }
 
   function saveCheckpoint(){
@@ -36,39 +42,81 @@
     return titles[chapter]||`Chapter ${chapter}`;
   }
 
+  function chapterState(chapter,current){
+    if(chapter<current)return 'complete';
+    if(chapter===current)return 'current';
+    return 'locked';
+  }
+
   function renderStory(panel){
     const current=currentChapter();
-    const rows=Array.from({length:current},(_,i)=>i+1).map(chapter=>{
-      const active=chapter===current;
-      return `<button class="common-menu__chapter ${active?'is-current':'is-complete'}" type="button" ${active?'data-resume="true"':'disabled'}>
-        <span class="common-menu__chapter-number">CHAPTER ${chapter}</span>
-        <strong>${chapterTitle(chapter)}</strong>
-        <i>${active?'진행 중':'완료'}</i>
-      </button>${chapter<current?'<div class="common-menu__line"></div>':''}`;
+    const groups=Array.from({length:MAX_CHAPTER/CHAPTER_GROUP_SIZE},(_,groupIndex)=>{
+      const start=groupIndex*CHAPTER_GROUP_SIZE+1;
+      const end=start+CHAPTER_GROUP_SIZE-1;
+      const containsCurrent=current>=start&&current<=end;
+      const rows=Array.from({length:CHAPTER_GROUP_SIZE},(_,i)=>start+i).map(chapter=>{
+        const status=chapterState(chapter,current);
+        const label=status==='complete'?'완료':status==='current'?'진행 중':'잠김';
+        const icon=status==='complete'?'✓':status==='current'?'▶':'🔒';
+        return `<button class="common-menu__chapter is-${status}" type="button" ${status==='current'?'data-resume="true"':'disabled'}>
+          <span class="common-menu__chapter-number">CHAPTER ${chapter}</span>
+          <strong>${chapterTitle(chapter)}</strong>
+          <i><b>${icon}</b>${label}</i>
+        </button>${chapter<end?'<div class="common-menu__line"></div>':''}`;
+      }).join('');
+      return `<section class="common-menu__story-group ${containsCurrent?'is-open':''}">
+        <button class="common-menu__group-toggle" type="button" aria-expanded="${containsCurrent}">
+          <span>CHAPTER ${start} — ${end}</span><i>${containsCurrent?'−':'＋'}</i>
+        </button>
+        <div class="common-menu__group-body">${rows}</div>
+      </section>`;
     }).join('');
-    panel.innerHTML=`<div class="common-menu__page-head"><button class="common-menu__back" type="button">‹</button><h2>메인 스토리</h2></div><div class="common-menu__story-map">${rows}</div>`;
+
+    panel.innerHTML=`<div class="common-menu__page-head"><button class="common-menu__back" type="button">‹</button><h2>메인 스토리</h2></div><div class="common-menu__story-map">${groups}</div>`;
     panel.querySelector('.common-menu__back').onclick=()=>renderHome(panel);
     panel.querySelector('[data-resume="true"]')?.addEventListener('click',closeMenu);
-  }
-
-  function reachedScenes(){
-    try{
-      if(!Array.isArray(scenes))return [];
-      const end=Math.max(0,Math.min(index,scenes.length-1));
-      return scenes.slice(0,end+1).filter(scene=>scene&&scene.text&&!['battle','reward','levelup'].includes(scene.type));
-    }catch{return [];}
-  }
-
-  function renderHistory(panel){
-    const grouped=new Map();
-    reachedScenes().forEach(scene=>{
-      const chapter=Number(scene.chapter||1);
-      if(!grouped.has(chapter))grouped.set(chapter,[]);
-      grouped.get(chapter).push(scene);
+    panel.querySelectorAll('.common-menu__group-toggle').forEach(toggle=>{
+      toggle.onclick=()=>{
+        const group=toggle.closest('.common-menu__story-group');
+        const open=group.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded',String(open));
+        toggle.querySelector('i').textContent=open?'−':'＋';
+      };
     });
-    const content=[...grouped.entries()].reverse().map(([chapter,items])=>`<section class="common-menu__history-chapter"><h3>CHAPTER ${chapter}</h3>${items.map(scene=>`<div class="common-menu__log">${scene.speaker?`<strong>${scene.speaker}</strong>`:''}<p>${String(scene.text).replace(/</g,'&lt;').replace(/\n/g,'<br>')}</p></div>`).join('')}</section>`).join('')||'<p class="common-menu__empty">아직 기록된 이야기가 없습니다.</p>';
-    panel.innerHTML=`<div class="common-menu__page-head"><button class="common-menu__back" type="button">‹</button><h2>히스토리</h2></div><div class="common-menu__scroll">${content}</div>`;
+  }
+
+  function memoirData(chapter){
+    const library=window.MONGYEONG_MEMOIRS||{};
+    return library[chapter]||null;
+  }
+
+  function renderMemoirBook(panel,chapter){
+    const memoir=memoirData(chapter);
+    const title=memoir?.title||chapterTitle(chapter);
+    const body=memoir?.body||'';
+    panel.innerHTML=`<div class="common-menu__page-head"><button class="common-menu__back" type="button">‹</button><h2>회상록</h2></div>
+      <article class="common-menu__memoir-reader">
+        <small>CHAPTER ${chapter}</small>
+        <h3>${title}</h3>
+        ${body?`<div class="common-menu__memoir-body">${String(body).replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>`:'<div class="common-menu__memoir-pending"><strong>회상록 검수 전</strong><p>이 챕터의 플레이 점검이 끝난 뒤, 확정된 사건과 선택 결과만으로 함께 작성합니다.</p></div>'}
+      </article>`;
+    panel.querySelector('.common-menu__back').onclick=()=>renderMemoirs(panel);
+  }
+
+  function renderMemoirs(panel){
+    const completed=completedChapter();
+    const books=completed>0?Array.from({length:completed},(_,i)=>i+1).reverse().map(chapter=>{
+      const memoir=memoirData(chapter);
+      return `<button class="common-menu__memoir-book ${memoir?'is-written':'is-pending'}" type="button" data-chapter="${chapter}">
+        <span class="common-menu__memoir-spine">${String(chapter).padStart(2,'0')}</span>
+        <div><small>CHAPTER ${chapter}</small><strong>${memoir?.title||chapterTitle(chapter)}</strong><p>${memoir?'기록 완료':'플레이 검수 후 작성'}</p></div>
+        <i>›</i>
+      </button>`;
+    }).join(''):'<p class="common-menu__empty">챕터를 클리어하면 회상록이 열립니다.</p>';
+
+    panel.innerHTML=`<div class="common-menu__page-head"><button class="common-menu__back" type="button">‹</button><h2>회상록</h2></div><div class="common-menu__scroll"><div class="common-menu__memoir-guide">완료한 챕터를 한 권의 이야기로 다시 읽습니다.</div>${books}</div>`;
     panel.querySelector('.common-menu__back').onclick=()=>renderHome(panel);
+    panel.querySelectorAll('[data-chapter]').forEach(book=>book.onclick=()=>renderMemoirBook(panel,Number(book.dataset.chapter)));
   }
 
   function relationStage(value){
@@ -109,12 +157,12 @@
   function renderHome(panel){
     panel.innerHTML=`<div class="common-menu__brand"><small>夢境</small><h2>메뉴</h2></div><nav class="common-menu__nav">
       <button type="button" data-page="story"><span>01</span><strong>메인 스토리</strong><i>›</i></button>
-      <button type="button" data-page="history"><span>02</span><strong>히스토리</strong><i>›</i></button>
+      <button type="button" data-page="memoirs"><span>02</span><strong>회상록</strong><i>›</i></button>
       <button type="button" data-page="relationship"><span>03</span><strong>호감도</strong><i>›</i></button>
       <button type="button" data-page="settings"><span>04</span><strong>설정</strong><i>›</i></button>
     </nav><button class="common-menu__resume" type="button">게임으로 복귀</button>`;
     panel.querySelector('[data-page="story"]').onclick=()=>renderStory(panel);
-    panel.querySelector('[data-page="history"]').onclick=()=>renderHistory(panel);
+    panel.querySelector('[data-page="memoirs"]').onclick=()=>renderMemoirs(panel);
     panel.querySelector('[data-page="relationship"]').onclick=()=>renderRelationship(panel);
     panel.querySelector('[data-page="settings"]').onclick=()=>renderSettings(panel);
     panel.querySelector('.common-menu__resume').onclick=closeMenu;
