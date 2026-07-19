@@ -84,7 +84,6 @@
     {type:'city',speaker:'주인공',text:'저를 찾으셨어요?'},
     {type:'city',speaker:'길드 직원',text:'길드장님께서 찾고 계십니다.\n길드에 도착하시면 바로 길드장실로 올라오라고 하셨습니다.'},
     {type:'city',speaker:'주인공',text:'길드장님이 저를요?'},
-    {type:'city',speaker:'길드 직원',text:'네. 자세한 내용은 직접 말씀해 주실 겁니다.'},
     {type:'city',text:'길드 직원은 먼저 돌아갔다.\n주인공도 훈련 센터를 나와 헌터지구로 향했다.'},
 
     {type:'guildRoute'},
@@ -94,9 +93,18 @@
     {type:'city',speaker:'주인공',text:'네. 아직 부족하지만 조금씩 익숙해지고 있습니다.'},
     {type:'city',speaker:'길드장',text:'좋아, 좋아. 너무 딱딱하게 있을 필요는 없어.'},
     {type:'city',text:'길드장은 아무것도 모르는 듯 웃으며 책상 위의 의뢰서 한 장을 앞으로 밀었다.'},
-    {type:'city',speaker:'길드장',text:'마침 자네에게 맡기고 싶은 정식 의뢰가 하나 생겼네.'},
-    {type:'city',speaker:'주인공',text:'저에게 정식 의뢰를요?'},
-    {type:'city',speaker:'길드장',text:'그래. 이제 슬슬 길드 소속 헌터다운 일을 해봐야 하지 않겠나?'},
-    {type:'city',text:'주인공은 길드장이 내민 의뢰서를 바라봤다.\n그가 조금 전까지 자신에 대한 보고서를 읽고 있었다는 사실은 전혀 알지 못했다.'}
+    {type:'city',speaker:'길드장',text:'자네에게 첫 정식 의뢰를 맡기겠네.'},
+    {type:'city',speaker:'주인공',text:'네.'},
+    {type:'city',speaker:'길드장',text:'인접 도시에서 우리 길드로 보급 물자가 들어올 예정이네.'},
+    {type:'city',speaker:'길드장',text:'자네는 도시 외곽 관문에서 호송대와 접선해 물자를 인계받고, 길드까지 안전하게 운반하는 지원 임무를 맡게 될 걸세.'},
+    {type:'city',speaker:'길드장',text:'난이도는 높지 않지만, 이동 중에는 악몽이 나타날 가능성도 있으니 긴장을 늦추면 안 되네.'},
+    {type:'city',speaker:'주인공',text:'알겠습니다. 최선을 다하겠습니다.'},
+    {type:'city',speaker:'길드장',text:'좋아. 오늘은 푹 쉬고 내일 아침 출발하도록 하게.'},
+
+    {type:'missionLobby'},
+    {type:'officialMission'},
+    {type:'black',speaker:'주인공',text:'드디어 첫 정식 의뢰네.\n긴장되지만... 지금까지 배운 걸 믿어보자.'},
+    {clear:true,chapter:5},
+    {type:'levelup'}
   ];
 })();
