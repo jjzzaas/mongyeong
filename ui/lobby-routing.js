@@ -9,8 +9,16 @@
     document.querySelector('.main-lobby').appendChild(overlay);overlay.querySelector('.mission-close').onclick=()=>overlay.remove();
   }
 
+  function saveDestinationUnlock(destination){
+    const saveApi=window.MONGYEONG_SAVE;
+    if(!saveApi?.unlockLobbyTile)return;
+    saveApi.unlockLobbyTile(destination);
+  }
+
   renderMainLobby=function(scene){
     const destination=scene.destination||'guild';
+    saveDestinationUnlock(destination);
+
     const guildActive=destination==='guild';
     const lodgingActive=destination==='lodging';
     const exteriorActive=destination==='exterior';
