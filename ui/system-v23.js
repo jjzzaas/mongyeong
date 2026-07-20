@@ -60,14 +60,22 @@
   };
 
   renderBattle=function(){
+    const chapter=Number(window.SELECTED_CHAPTER||state.chapter||1);
+    const isSenaBattle=chapter===6;
     const allies=[
       {id:'player',name:state.playerName,hp:42,maxHp:42,damage:8,dodge:.10,defense:.20,specialChance:0,specialUsed:false},
-      {id:'haru',name:'하루',hp:48,maxHp:48,damage:16,dodge:.15,defense:.18,specialChance:.35,specialUsed:false}
+      isSenaBattle
+        ?{id:'sena',name:'세나',hp:38,maxHp:38,damage:7,dodge:.12,defense:.15,specialChance:0,specialUsed:false,role:'healer'}
+        :{id:'haru',name:'하루',hp:48,maxHp:48,damage:16,dodge:.15,defense:.18,specialChance:.35,specialUsed:false}
     ];
 
-    const enemies=[
-      {id:'enemy1',name:'정체불명의 생명체',hp:90,maxHp:90,damage:8,isBoss:false}
-    ];
+    const enemies=isSenaBattle
+      ?[
+        {id:'enemy1',name:'숲의 악몽',hp:54,maxHp:54,damage:8,isBoss:false},
+        {id:'enemy2',name:'기어오는 악몽',hp:42,maxHp:42,damage:7,isBoss:false}
+      ]
+      :[{id:'enemy1',name:'정체불명의 생명체',hp:90,maxHp:90,damage:8,isBoss:false}];
+
     const maxEnemySlots=5;
     let selectedEnemyId=enemies[0].id;
     const acted=new Set();
@@ -96,7 +104,7 @@
           ${allies.map(ally=>`<button class="battle-character-card" data-ally="${ally.id}">
             <span class="battle-card-order"></span>
             <strong>${ally.name}</strong>
-            <small>기본 공격 ${ally.damage}</small>
+            <small>${ally.role==='healer'?'치유 지원 · 기본 공격 7':`기본 공격 ${ally.damage}`}</small>
             <div class="hp"><span id="${ally.id}Hp"></span></div>
             <em id="${ally.id}Text">${ally.hp} / ${ally.maxHp}</em>
           </button>`).join('')}
@@ -111,6 +119,7 @@
       const enemyCards=Array.from(document.querySelectorAll('.battle-enemy-card[data-enemy]'));
 
       const livingEnemies=()=>enemies.filter(enemy=>enemy.hp>0);
+      const livingAllies=()=>allies.filter(ally=>ally.hp>0);
       const selectedEnemy=()=>enemies.find(enemy=>enemy.id===selectedEnemyId&&enemy.hp>0)||livingEnemies()[0];
 
       function sync(){
@@ -140,11 +149,27 @@
         app.firstElementChild.addEventListener('click',next,{once:true});
       }
 
+      function trySenaEmergencyHeal(){
+        if(!isSenaBattle)return false;
+        const sena=allies.find(ally=>ally.id==='sena');
+        if(!sena||sena.hp<=0||sena.specialUsed)return false;
+        const target=livingAllies().sort((a,b)=>(a.hp/a.maxHp)-(b.hp/b.maxHp))[0];
+        if(!target||target.hp/target.maxHp>=.30)return false;
+        sena.specialUsed=true;
+        const amount=Math.ceil(target.maxHp*.40);
+        target.hp=Math.min(target.maxHp,target.hp+amount);
+        label.textContent='SPECIAL SKILL';
+        line.innerHTML=`<strong>세나 — 치유의 빛</strong><br>${target.name}의 HP가 ${amount} 회복되었습니다.`;
+        sync();
+        return true;
+      }
+
       function resetAllyTurn(){
         acted.clear();
         enemyActing=false;
         allyCards.forEach(card=>{
-          card.disabled=false;
+          const ally=allies.find(item=>item.id===card.dataset.ally);
+          card.disabled=!ally||ally.hp<=0;
           card.classList.remove('is-acted');
           card.querySelector('.battle-card-order').textContent='';
         });
@@ -164,12 +189,18 @@
 
         const act=()=>{
           if(enemyIndex>=attackers.length){
+            if(livingAllies().length===0){
+              label.textContent='DEFEAT';
+              line.textContent='전투를 다시 시작하려면 화면을 터치하세요.';
+              app.firstElementChild.addEventListener('click',renderBattle,{once:true});
+              return;
+            }
             setTimeout(resetAllyTurn,700);
             return;
           }
           const attacker=attackers[enemyIndex++];
-          const livingAllies=allies.filter(ally=>ally.hp>0);
-          const target=livingAllies[Math.floor(Math.random()*livingAllies.length)];
+          const targets=livingAllies();
+          const target=targets[Math.floor(Math.random()*targets.length)];
           label.textContent=`적 ${enemyIndex} · ${attacker.name}`;
           setTimeout(()=>{
             const roll=Math.random();
@@ -178,11 +209,12 @@
             }else{
               const defended=Math.random()<target.defense;
               const damage=defended?Math.ceil(attacker.damage/2):attacker.damage;
-              target.hp-=damage;
+              target.hp=Math.max(0,target.hp-damage);
               line.textContent=defended?`${target.name}이 공격을 방어했습니다. ${damage}의 피해.`:`${target.name}이 ${damage}의 피해를 받았습니다.`;
             }
             sync();
-            setTimeout(act,650);
+            const healed=trySenaEmergencyHeal();
+            setTimeout(act,healed?1150:650);
           },500);
         };
         act();
@@ -223,7 +255,9 @@
           card.classList.add('is-acted');
           card.disabled=true;
           card.querySelector('.battle-card-order').textContent=`${acted.size}번째 행동`;
-          line.textContent=`${ally.name}이 ${target.name}을 공격했습니다. ${ally.damage}의 피해.`;
+          line.textContent=ally.id==='sena'
+            ?`세나가 응축한 정신 에너지를 날렸습니다. ${ally.damage}의 피해.`
+            :`${ally.name}이 ${target.name}을 공격했습니다. ${ally.damage}의 피해.`;
           if(target.hp<=0){
             const nextTarget=livingEnemies()[0];
             if(nextTarget)selectedEnemyId=nextTarget.id;
@@ -234,7 +268,7 @@
           setTimeout(()=>{
             const special=trySpecial(ally);
             if(livingEnemies().length===0){setTimeout(victory,special?850:0);return;}
-            if(acted.size===allies.length){
+            if(acted.size===livingAllies().length){
               setTimeout(enemyTurn,special?1000:450);
             }else if(!special){
               label.textContent='아군 턴 · 남은 캐릭터 선택';
