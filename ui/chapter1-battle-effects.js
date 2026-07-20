@@ -11,7 +11,7 @@
       {id:'enemy1',name:'정체불명의 생명체',maxHp:90,hp:90,damage:8,attackType:'claw'}
     ].slice(0,5);
 
-    let allyTurnIndex=0;
+    let phase='ally';
     let enemyTurnIndex=0;
     let actionLocked=false;
     let haruSpecialUsed=false;
@@ -48,11 +48,11 @@
       const line=document.getElementById('battleLine');
       const label=document.getElementById('turnLabel');
       const allyCards=allies.map(unit=>document.getElementById(`ally-${unit.id}`));
-      const enemyCards=enemies.map(unit=>document.getElementById(`enemy-${unit.id}`));
 
       const livingAllies=()=>allies.filter(unit=>unit.hp>0);
       const livingEnemies=()=>enemies.filter(unit=>unit.hp>0);
       const firstLivingEnemy=()=>enemies.find(unit=>unit.hp>0);
+      const remainingAllies=()=>livingAllies().filter(unit=>!actedAllies.has(unit.id));
 
       function sync(){
         allies.forEach(unit=>{
@@ -71,11 +71,11 @@
         allyCards.forEach((card,index)=>{
           const unit=allies[index];
           card.classList.remove('active-turn','disabled-turn','turn-complete');
-          if(unit.hp<=0||actionLocked){
+          if(unit.hp<=0){
             card.classList.add('disabled-turn');
           }else if(actedAllies.has(unit.id)){
             card.classList.add('turn-complete');
-          }else if(index===allyTurnIndex){
+          }else if(phase==='ally'&&!actionLocked){
             card.classList.add('active-turn');
           }else{
             card.classList.add('disabled-turn');
@@ -83,10 +83,10 @@
         });
       }
 
-      function showAllyTurn(){
-        const unit=allies[allyTurnIndex];
-        label.textContent=`아군 ${allyTurnIndex+1} · ${unit.name}`;
-        line.textContent=`${unit.name}의 차례입니다. 카드를 터치하세요.`;
+      function showAllySelection(){
+        phase='ally';
+        label.textContent='아군 행동';
+        line.textContent='공격할 아군 카드를 선택하세요.';
         updateCardStates();
       }
 
@@ -105,17 +105,16 @@
         line.textContent='전투를 계속할 수 없습니다.';
       }
 
-      async function tryHaruSpecial(attacker,target){
+      async function tryHaruSpecial(attacker){
         if(attacker.special!=='celestial'||haruSpecialUsed||Math.random()>=0.35)return;
         haruSpecialUsed=true;
         label.textContent='SPECIAL SKILL';
         line.innerHTML='<strong>하루 — 천체낙하</strong><br>푸른 천체의 빛이 적 전체를 덮쳤다.';
         const targets=livingEnemies();
         for(const enemy of targets){
-          const targetElement=document.getElementById(`enemy-${enemy.id}`);
           await effects.playAttack({
             attacker:document.getElementById(`ally-${attacker.id}`),
-            target:targetElement,
+            target:document.getElementById(`enemy-${enemy.id}`),
             type:'energy',projectileType:'energy',damage:24,heavy:true,
             onImpact:()=>{enemy.hp-=24;sync();}
           });
@@ -123,7 +122,10 @@
       }
 
       async function beginEnemyRound(){
+        phase='enemy';
         enemyTurnIndex=0;
+        actionLocked=true;
+        updateCardStates();
         await runNextEnemyTurn();
       }
 
@@ -132,14 +134,11 @@
         if(!activeEnemies.length){victory();return;}
         if(enemyTurnIndex>=activeEnemies.length){
           actedAllies.clear();
-          allyTurnIndex=allies.findIndex(unit=>unit.hp>0);
           actionLocked=false;
-          showAllyTurn();
+          showAllySelection();
           return;
         }
 
-        actionLocked=true;
-        updateCardStates();
         const enemy=activeEnemies[enemyTurnIndex];
         const targets=livingAllies();
         if(!targets.length){defeat();return;}
@@ -163,7 +162,7 @@
       }
 
       async function allyAttack(index){
-        if(actionLocked||index!==allyTurnIndex)return;
+        if(actionLocked||phase!=='ally')return;
         const attacker=allies[index];
         if(!attacker||attacker.hp<=0||actedAllies.has(attacker.id))return;
         const target=firstLivingEnemy();
@@ -171,15 +170,13 @@
 
         actionLocked=true;
         updateCardStates();
-        const attackerElement=document.getElementById(`ally-${attacker.id}`);
-        const targetElement=document.getElementById(`enemy-${target.id}`);
         line.textContent=attacker.id==='player'
           ?`${attacker.name}이 맨손으로 파고들었다. ${attacker.damage}의 피해.`
           :`${attacker.name}의 빛의 화살이 적을 꿰뚫었다.`;
 
         await effects.playAttack({
-          attacker:attackerElement,
-          target:targetElement,
+          attacker:document.getElementById(`ally-${attacker.id}`),
+          target:document.getElementById(`enemy-${target.id}`),
           type:attacker.attackType,
           projectileType:attacker.projectileType,
           damage:attacker.damage,
@@ -189,15 +186,13 @@
         if(!livingEnemies().length){victory();return;}
 
         await effects.wait(160);
-        await tryHaruSpecial(attacker,target);
+        await tryHaruSpecial(attacker);
         if(!livingEnemies().length){victory();return;}
 
-        let nextIndex=index+1;
-        while(nextIndex<allies.length&&(allies[nextIndex].hp<=0||actedAllies.has(allies[nextIndex].id)))nextIndex+=1;
-        if(nextIndex<allies.length){
-          allyTurnIndex=nextIndex;
+        await effects.wait(160);
+        if(remainingAllies().length){
           actionLocked=false;
-          showAllyTurn();
+          showAllySelection();
         }else{
           await effects.wait(220);
           beginEnemyRound();
@@ -213,7 +208,7 @@
       });
 
       sync();
-      showAllyTurn();
+      showAllySelection();
     });
   };
 })();
