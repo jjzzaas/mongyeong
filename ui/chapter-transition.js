@@ -1,5 +1,5 @@
 (()=>{
-  const LAST_CHAPTER=5;
+  const LAST_CHAPTER=6;
   const originalNext=next;
 
   function openChapter(chapter){
