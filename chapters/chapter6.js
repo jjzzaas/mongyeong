@@ -1,0 +1,73 @@
+(()=>{
+  window.CHAPTER_6=[
+    {type:'black',text:'CHAPTER 6\n\n첫 정식 의뢰'},
+    {type:'lodging',text:'아침 햇살이 작은 창문 사이로 스며들었다.\n주인공은 평소보다 조금 일찍 눈을 떴다.'},
+    {type:'lodging',speaker:'주인공',text:'오늘이 첫 정식 의뢰다.\n늦지 않게 출발하자.'},
+    {type:'mainLobby',speaker:'주인공',text:'집결 장소는 도시 외곽 관문이었지.\n바로 출발하자.',destination:'exterior',missionGoal:'도시 외곽 관문으로 이동하세요.',missionProgress:10},
+
+    {type:'outskirts',text:'도시 외곽 관문 앞에는 길드 직원들과 여러 대의 짐수레가 모여 있었다.\n호송대는 출발 준비를 마치며 마지막으로 물자를 점검하고 있었다.'},
+    {type:'outskirts',text:'주변을 살피던 중, 한 여성이 익숙하다는 듯 가볍게 손을 들어 보였다.'},
+    {type:'outskirts',speaker:'???',text:'이제 오셨네요.\n몸은 괜찮으세요?'},
+    {type:'outskirts',speaker:'주인공',text:'저를 아세요?'},
+    {type:'outskirts',speaker:'???',text:'훈련 센터에서 쓰러졌을 때 잠깐 치료해드렸거든요.\n눈을 뜨기 전에 나와서 기억하지 못하실 거예요.'},
+    {type:'outskirts',speaker:'주인공',text:'그때 따뜻했던 기운이... 당신이었군요.\n감사합니다.'},
+    {type:'outskirts',speaker:'???',text:'별말씀을요.\n오늘은 같은 지원 인력으로 배정됐으니 잘 부탁드려요.'},
+    {type:'outskirts',text:'그녀는 자연스럽게 주인공의 상태를 살피고는 안심한 듯 미소를 지었다.\n낯선 사람을 대하는 태도라기보다 이미 한 번 환자를 돌본 사람의 눈빛에 가까웠다.'},
+
+    {type:'black',text:'잠시 뒤 호송대가 움직이기 시작했다.\n두 사람은 짐수레의 뒤를 따라 도시 밖 길로 나섰다.'},
+    {type:'outskirts',speaker:'???',text:'첫 정식 의뢰라고 들었어요.\n너무 긴장하지 않으셔도 돼요.'},
+    {type:'outskirts',speaker:'주인공',text:'티가 났나요?'},
+    {type:'outskirts',speaker:'???',text:'조금요.\n계속 주변을 살피고 계시잖아요.'},
+    {type:'outskirts',speaker:'주인공',text:'악몽이 나타날 수도 있다고 들어서요.'},
+    {type:'outskirts',speaker:'???',text:'경계하는 건 좋은 습관이에요.\n그래도 제가 옆에 있으니 다쳤을 때는 너무 걱정하지 마세요.'},
+    {type:'outskirts',speaker:'주인공',text:'다쳤을 때를 너무 자연스럽게 말씀하시네요.'},
+    {type:'outskirts',speaker:'???',text:'치료할 수 있다는 것과 아프지 않다는 건 다른 이야기니까요.\n가능하면 다치지 않는 게 가장 좋죠.'},
+
+    {type:'black',text:'호송대가 좁은 숲길에 들어선 순간—\n\n앞쪽에서 거친 충돌음이 울려 퍼졌다.'},
+    {type:'outskirts',text:'검은 형체들이 수풀을 헤치며 짐수레를 향해 달려들었다.\n길드 직원들이 다급히 대열을 세웠고, 주인공도 검을 구현해 앞으로 나섰다.'},
+    {type:'outskirts',speaker:'???',text:'뒤쪽은 제가 맡을게요.\n앞의 개체에 집중하세요.'},
+    {type:'black',text:'짧고 거친 전투가 이어졌다.\n주인공은 눈앞의 악몽을 밀어냈지만, 옆쪽 수풀에서 또 다른 개체가 튀어나왔다.'},
+    {type:'outskirts',text:'악몽의 날카로운 발톱이 그녀를 향해 곧게 휘둘러졌다.\n그녀는 공격을 보고도 크게 피하지 않았다.'},
+    {type:'black',speaker:'주인공',text:'위험해...!'},
+    {type:'outskirts',text:'주인공은 생각할 틈도 없이 몸을 던져 그녀의 앞을 가로막았다.\n둔탁한 충격과 함께 옆구리가 깊게 찢어졌다.'},
+    {type:'outskirts',speaker:'???',text:'잠깐, 왜 절 감싼 거예요?'},
+    {type:'outskirts',speaker:'주인공',text:'다칠 것 같아서...'},
+    {type:'outskirts',speaker:'???',text:'그 정도 상처는 바로 회복할 수 있었어요.\n하지만 지금은 말하지 마세요.'},
+
+    {type:'black',text:'남은 악몽이 물러난 뒤 그녀는 즉시 주인공의 상처 위에 손을 올렸다.\n부드러운 정신 에너지가 몸 안으로 흘러들었다.'},
+    {type:'outskirts',text:'전투로 소모된 정신 에너지는 빠르게 안정됐다.\n흐려졌던 의식도 조금씩 돌아왔다.'},
+    {type:'black',text:'하지만 피는 멎지 않았다.\n찢어진 상처도 그대로였다.'},
+    {type:'outskirts',speaker:'???',text:'정신 에너지는 회복되고 있는데...\n왜 상처가 남아 있는 거죠?'},
+    {type:'outskirts',text:'그녀가 다시 치료를 시도했지만 결과는 같았다.\n치유의 빛은 분명 주인공에게 닿았지만 상처에는 아무런 변화가 없었다.'},
+    {type:'outskirts',speaker:'???',text:'회복 반응은 분명히 있어요.\n그런데 상처에 닿지 않아요.'},
+    {type:'black',text:'멀지 않은 곳에서 다시 악몽의 울음소리가 들렸다.\n이곳에 오래 머물 수는 없었다.'},
+
+    {type:'outskirts',speaker:'???',text:'여기서 계속 치료해도 소용없어요.\n일단 안전한 곳으로 이동할게요.'},
+    {type:'outskirts',text:'그녀는 주인공의 팔을 자신의 어깨 위로 올리고 가까운 폐허 안쪽으로 부축했다.\n무너진 벽 사이로 들어가자 바깥에서는 보이지 않는 작은 공간이 나타났다.'},
+    {type:'black',text:'그녀가 손끝에 정신 에너지를 모으자 희미한 막이 폐허의 입구를 감쌌다.\n밖에서는 무너진 돌벽만 보였고, 안쪽의 소리와 기척도 거의 새어 나가지 않았다.'},
+    {type:'outskirts',speaker:'???',text:'은폐 결계예요.\n오래 유지할 수는 없지만 당분간은 들키지 않을 거예요.'},
+
+    {type:'black',text:'좁고 폐쇄된 공간에는 두 사람의 거친 숨소리만 남았다.\n그녀는 주인공을 벽에 기대 앉히고 상처를 다시 살폈다.'},
+    {type:'outskirts',text:'잠시 망설이던 그녀는 자신의 겉옷 아래쪽을 길게 찢었다.\n찢어낸 천을 접어 상처 위에 올리고 양손으로 강하게 눌렀다.'},
+    {type:'outskirts',speaker:'주인공',text:'그런 치료법도 있었나요?'},
+    {type:'outskirts',speaker:'???',text:'모르겠어요.\n그냥... 이렇게 해야 할 것 같았어요.'},
+    {type:'outskirts',text:'피가 천에 번지자 그녀는 몸을 더 가까이 붙여 압박을 유지했다.\n한 손으로는 주인공의 등을 받치고, 다른 손으로는 상처에서 손을 떼지 않았다.'},
+    {type:'outskirts',speaker:'???',text:'조금 불편해도 참아주세요.\n지금은 피를 멎게 하는 게 먼저예요.'},
+    {type:'black',text:'시간이 흐르자 주인공의 몸에 열이 오르기 시작했다.\n그녀는 결계 안쪽에 맺힌 차가운 물기를 천에 적셔 이마와 목덜미를 천천히 닦아주었다.'},
+    {type:'outskirts',speaker:'주인공',text:'왜 이런 방법을 알고 계신 거죠?'},
+    {type:'outskirts',speaker:'???',text:'저도 모르겠어요.\n생각한 게 아니라 몸이 먼저 움직였어요.'},
+
+    {type:'black',text:'좁은 은신처 안에서 그녀의 체온과 부드러운 숨결이 가까이 느껴졌다.\n상처를 확인하고 자세를 바꿀 때마다 자연스럽게 몸이 맞닿았다.'},
+    {type:'outskirts',speaker:'???',text:'지금은 환자니까 얌전히 계세요.\n제가 괜찮다고 할 때까지는 움직이면 안 돼요.'},
+    {type:'outskirts',speaker:'주인공',text:'알겠습니다.'},
+    {type:'outskirts',speaker:'???',text:'대답은 잘하시네요.\n처음 만난 사람을 구하려고 뛰어드는 것만 빼면요.'},
+    {type:'outskirts',text:'나무라는 말투였지만 상처를 감싼 손길은 한층 더 조심스러워졌다.\n그녀는 주인공의 호흡이 안정될 때까지 곁을 떠나지 않았다.'},
+
+    {type:'black',text:'밤이 깊어졌다.\n은폐 결계 너머로 희미한 바람 소리만 들려왔다.'},
+    {type:'outskirts',text:'주인공이 잠든 뒤에도 그녀는 한동안 곁에 앉아 맥박과 체온을 확인했다.\n그러다 피로에 못 이겨 주인공의 어깨에 조심스럽게 기대었다.'},
+    {type:'black',speaker:'???',text:'왜 이런 걸 알고 있는 거지...\n마치 아주 오래전에도 누군가를 이렇게 돌봤던 것처럼...'},
+    {type:'black',text:'기억은 떠오르지 않았다.\n하지만 손끝에 남은 익숙한 감각만은 사라지지 않았다.'},
+    {clear:true,chapter:6},
+    {type:'levelup'}
+  ];
+})();
