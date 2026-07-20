@@ -36,6 +36,15 @@
 
   function startNewGame(){
     if(!saveApi.clearSave?.())return;
+    [
+      'mongyeong.battleSpeed',
+      'mongyeong.battleAuto',
+      'mongyeong.autoUnlocked',
+      'mongyeong.speedUnlocked',
+      'mongyeong.weapon'
+    ].forEach(key=>localStorage.removeItem(key));
+    localStorage.setItem('mongyeong.battleSpeed','1');
+    localStorage.setItem('mongyeong.battleAuto','0');
     const cleanUrl=`${location.origin}${location.pathname}`;
     location.replace(cleanUrl);
   }
