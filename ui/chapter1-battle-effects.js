@@ -30,7 +30,22 @@
         <div class="hp enemy-hp"><span id="enemy-hp-${unit.id}"></span></div>
       </section>`).join('');
 
-    mount(`<main class="screen battle-screen chapter1-effect-battle">
+    mount(`<style>
+      .chapter1-effect-battle{padding-top:calc(env(safe-area-inset-top) + 14px);padding-bottom:42px}
+      .chapter1-effect-battle .battle-controls{left:auto;right:14px;top:calc(env(safe-area-inset-top) + 12px);display:flex;justify-content:flex-end;gap:6px;z-index:5}
+      .chapter1-effect-battle .control-btn{min-width:52px;padding:7px 8px;border-radius:9px;font-size:11px;white-space:nowrap}
+      .chapter1-effect-battle .battle-layout{position:relative;width:min(860px,100%);height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:10px;padding-top:48px}
+      .chapter1-effect-battle .battle-enemies{align-self:start}
+      .chapter1-effect-battle .battle-middle{position:absolute;left:0;right:0;top:53%;transform:translateY(-50%);min-height:0;gap:6px;padding:0 12px}
+      .chapter1-effect-battle .turn-label{font-size:13px;font-weight:800;letter-spacing:.12em}
+      .chapter1-effect-battle .battle-line{min-height:42px;padding:5px 12px}
+      .chapter1-effect-battle .battle-allies{align-self:end;margin-top:auto}
+      @media(max-height:700px){
+        .chapter1-effect-battle .battle-layout{padding-top:42px;gap:6px}
+        .chapter1-effect-battle .battle-middle{top:51%}
+        .chapter1-effect-battle .battle-line{min-height:34px}
+      }
+    </style><main class="screen battle-screen chapter1-effect-battle">
       <div class="battle-controls">
         <button class="control-btn locked">×1 잠김</button>
         <button class="control-btn locked">AUTO 잠김</button>
