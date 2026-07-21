@@ -44,6 +44,8 @@ export const createDeveloperPanel = ({ onClose } = {}) => {
     </section>
   `;
 
+  panel.addEventListener('click', (event) => event.stopPropagation());
+
   panel.querySelector('[data-developer-close]').addEventListener('click', () => {
     panel.hidden = true;
     onClose?.();
