@@ -28,6 +28,7 @@ export const createDeveloperTapDetector = ({ onUnlock }) => {
 export const getDeveloperSnapshot = (state) => ({
   currentChapter: state.currentChapter,
   currentScene: state.currentScene,
+  status: state.status,
   affection: state.affection,
   trust: state.trust,
   traits: state.traits,
