@@ -8,14 +8,24 @@ const getRangeFolder = (chapter) => {
   return `${padChapter(start)}-${padChapter(end)}`;
 };
 
+const chapterTitles = {
+  1: '낯선 세계',
+  2: '길드와 임시 숙소',
+  3: '첫 임무',
+  4: '훈련의 시작',
+  5: '개인 훈련과 정식 의뢰',
+  6: '첫 정식 의뢰',
+};
+
 export const chapterRegistry = Array.from({ length: CHAPTER_COUNT }, (_, index) => {
   const chapter = index + 1;
   const number = padChapter(chapter);
+  const isCreated = chapter <= 6;
 
   return {
     id: chapter,
-    title: chapter === 1 ? '낯선 세계' : `CHAPTER ${chapter}`,
-    status: chapter === 1 ? 'complete' : 'empty',
+    title: chapterTitles[chapter] || `CHAPTER ${chapter}`,
+    status: isCreated ? 'complete' : 'empty',
     path: `./${getRangeFolder(chapter)}/chapter-${number}.js`,
   };
 });
