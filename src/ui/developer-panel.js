@@ -6,7 +6,7 @@ const 표시이름 = {
 
 const formatValues = (values = {}) =>
   Object.entries(values)
-    .map(([name, value]) => `<li><span>${표시이름[name] || name}</span><strong>${value}</strong></li>`)
+    .map(([name, value]) => `<li><span>${표시이름[name] || name}</span><strong>${Array.isArray(value) ? (value.join(', ') || '없음') : value}</strong></li>`)
     .join('') || '<li>기록 없음</li>';
 
 export const createDeveloperPanel = ({ onClose } = {}) => {
@@ -22,6 +22,11 @@ export const createDeveloperPanel = ({ onClose } = {}) => {
     <section>
       <h3>현재 위치</h3>
       <p data-developer-location>확인 전</p>
+    </section>
+
+    <section>
+      <h3>주인공 스테이터스</h3>
+      <ul data-developer-status></ul>
     </section>
 
     <section>
@@ -64,6 +69,7 @@ export const updateDeveloperPanel = (panel, snapshot) => {
   panel.querySelector('[data-developer-location]').textContent =
     `챕터 ${snapshot.currentChapter} / 장면 ${snapshot.currentScene}`;
 
+  panel.querySelector('[data-developer-status]').innerHTML = formatValues(snapshot.status);
   panel.querySelector('[data-developer-affection]').innerHTML = formatValues(snapshot.affection);
   panel.querySelector('[data-developer-trust]').innerHTML = formatValues(snapshot.trust);
   panel.querySelector('[data-developer-traits]').innerHTML = formatValues(snapshot.traits);
