@@ -1,0 +1,152 @@
+.system-window {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  justify-items: center;
+  width: min(92vw, 580px);
+  padding: 28px 24px 24px;
+  border: 1px solid rgba(90, 177, 255, .82);
+  background:
+    linear-gradient(180deg, rgba(20, 70, 125, .34), rgba(4, 20, 46, .82)),
+    rgba(2, 10, 24, .78);
+  box-shadow:
+    0 0 0 1px rgba(116, 205, 255, .12) inset,
+    0 0 30px rgba(28, 130, 255, .42),
+    0 24px 64px rgba(0, 0, 0, .56);
+  backdrop-filter: blur(14px);
+  clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+  animation: systemRise .42s ease both;
+}
+
+.system-window::before,
+.system-window::after {
+  content: '';
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-color: #8bd2ff;
+  filter: drop-shadow(0 0 7px rgba(69, 176, 255, .9));
+}
+
+.system-window::before {
+  top: 8px;
+  left: 8px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.system-window::after {
+  right: 8px;
+  bottom: 8px;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+}
+
+.system-window__scan {
+  position: absolute;
+  inset: -35% 0 auto;
+  height: 42%;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(95, 205, 255, .13), transparent);
+  animation: statusScan 2.8s linear infinite;
+}
+
+.system-window__label {
+  display: block;
+  color: #69b8ff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .24em;
+}
+
+.system-window h2 {
+  margin: 10px 0 18px;
+  color: #f4fbff;
+  font-size: clamp(26px, 7vw, 42px);
+  line-height: 1.25;
+  letter-spacing: .07em;
+  text-shadow: 0 0 18px rgba(75, 177, 255, .54);
+}
+
+.system-window__subtitle {
+  margin: 0;
+  color: rgba(223, 240, 255, .82);
+  font-size: clamp(16px, 4vw, 22px);
+  line-height: 1.6;
+  letter-spacing: .12em;
+}
+
+.system-window__line {
+  width: 100%;
+  height: 1px;
+  margin: 20px 0 0;
+  background: linear-gradient(90deg, transparent, rgba(92, 190, 255, .78), transparent);
+}
+
+.system-window small {
+  margin-top: 16px;
+  color: rgba(190, 221, 255, .58);
+  font-size: 12px;
+  letter-spacing: .08em;
+  animation: blink 1.2s infinite;
+}
+
+.system-window__status {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 2px 0 4px;
+}
+
+.system-window__status-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.system-window__status-row > span,
+.system-window__status-row > strong {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(95, 181, 255, .18);
+  background: rgba(16, 52, 89, .24);
+  color: rgba(229, 243, 255, .86);
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.system-window__status-row--single {
+  grid-template-columns: minmax(92px, .65fr) minmax(0, 1.35fr);
+}
+
+.system-window__status-row--single > strong {
+  color: #a9ddff;
+  font-weight: 700;
+}
+
+.system-window--chapter h2,
+.system-window--clear h2 {
+  font-size: clamp(29px, 8vw, 52px);
+}
+
+.system-window--level.status-window {
+  width: min(92vw, 580px);
+}
+
+.system-window--level .status-window__line {
+  width: 100%;
+}
+
+@media (max-width: 420px) {
+  .system-window {
+    width: min(94vw, 580px);
+    padding: 25px 18px 21px;
+  }
+
+  .system-window__status-row > span,
+  .system-window__status-row > strong {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+}
