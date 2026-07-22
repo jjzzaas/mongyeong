@@ -29,7 +29,7 @@ app.innerHTML = `
 
     <header class="vn-topbar">
       <span class="vn-title-mark">夢境 : 잠든 세계</span>
-      <button class="vn-version" id="versionButton" type="button" aria-label="버전 정보">VN 1.2</button>
+      <button class="vn-version" id="versionButton" type="button" aria-label="버전 정보">VN 1.3</button>
     </header>
 
     <div class="vn-controls">
@@ -122,6 +122,37 @@ function saveProgress() {
   continueButton.classList.remove('vn-hidden');
 }
 
+function getCenterContent(scene) {
+  if (scene.id === 'c1-clear') {
+    return `
+      <div class="chapter-clear-card">
+        <span class="chapter-clear-card__eyebrow">MISSION COMPLETE</span>
+        <strong>CHAPTER 1 CLEAR</strong>
+        <span class="chapter-clear-card__title">낯선 세계</span>
+        <small>화면을 터치해 계속</small>
+      </div>
+    `;
+  }
+
+  if (scene.id === 'c1-end') {
+    return `
+      <div class="status-window">
+        <div class="status-window__scan" aria-hidden="true"></div>
+        <span class="status-window__label">STATUS UPDATE</span>
+        <h2>레벨 상승</h2>
+        <div class="status-window__level">
+          <span>Lv. 1</span><b>→</b><strong>Lv. 2</strong>
+        </div>
+        <div class="status-window__line"></div>
+        <p>챕터 1 클리어 보상이 적용되었습니다.</p>
+        <small>화면을 터치해 계속</small>
+      </div>
+    `;
+  }
+
+  return scene.center ? scene.center.replaceAll('\n', '<br>') : '';
+}
+
 function renderScene() {
   const scene = scenes[index];
   if (!scene) return;
@@ -129,9 +160,11 @@ function renderScene() {
   gameState.currentChapter = getCurrentChapter().id;
   gameState.currentScene = scene.id;
 
-  applyMode(scene.mode || 'black');
+  const isStatusScene = scene.id === 'c1-end';
+  applyMode(isStatusScene ? 'status' : (scene.mode || 'black'));
   centerText.classList.toggle('vn-hidden', !scene.center);
-  centerText.innerHTML = scene.center ? scene.center.replaceAll('\n', '<br>') : '';
+  centerText.classList.toggle('vn-center-text--system', scene.id === 'c1-clear' || isStatusScene);
+  centerText.innerHTML = getCenterContent(scene);
 
   const hasDialogue = Boolean(scene.text || scene.speaker || scene.narration);
   dialogue.classList.toggle('vn-hidden', !hasDialogue);
