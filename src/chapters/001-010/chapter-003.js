@@ -1,70 +1,83 @@
 export const chapter003 = {
   id: 3,
-  title: '당황스러운 첫 만남',
+  title: '낯선 동행',
   scenes: [
-    { id: 'c3-title', mode: 'black', center: 'CHAPTER 3\n\n당황스러운 첫 만남' },
-    { id: 'c3-morning-light', mode: 'black', narration: true, text: '창문 틈으로 들어온 빛에 눈을 떴다. 낯선 천장과 어제의 기억이 천천히 돌아왔다.' },
+    { id: 'c3-title', mode: 'black', center: 'CHAPTER 3\n\n낯선 동행' },
+    { id: 'c3-morning-light', mode: 'black', narration: true, text: '희미한 아침빛에 눈을 떴다. 낯선 천장이 먼저 보였고, 그제야 어젯밤 임시 숙소에 들어왔다는 사실이 떠올랐다.' },
     { id: 'c3-sound', mode: 'black', center: '새근……\n\n새근……' },
-    { id: 'c3-turn', mode: 'city', narration: true, text: '바로 곁에서 인기척이 들렸다. 고개를 돌리자 처음 보는 소녀가 이불을 끌어안은 채 자고 있었다.' },
-    { id: 'c3-momo-wake', mode: 'city', speaker: '???', text: '으음…… 조금만 더…….' },
-    { id: 'c3-eye-contact', mode: 'city', narration: true, text: '소녀가 눈을 뜨는 순간 시선이 정면으로 마주쳤다. 짧은 침묵 뒤, 두 사람 모두 동시에 몸을 일으켰다.' },
-    { id: 'c3-momo-shock', mode: 'city', speaker: '???', text: '누, 누구예요?! 왜 남자가 여기 있어요?!' },
-    { id: 'c3-choice-first', mode: 'city', speaker: '주인공', text: '나도 묻고 싶은 말이었다.', choices: [
-      { id: 'c3-first-explain', label: '임시 숙소를 허가받았다고 설명한다.', reply: '저도 어제 안내원에게 이 방을 배정받았습니다. 놀라게 했다면 죄송합니다.', trust: { momo: 1 }, traits: { considerate: 1 } },
-      { id: 'c3-first-question', label: '상대가 누구인지 되묻는다.', reply: '저도 방금 알았습니다. 우선 누구신지부터 여쭤봐도 될까요?', traits: { cautious: 1 } },
-      { id: 'c3-first-distance', label: '시선을 피하고 거리를 둔다.', reply: '오해하지 마세요. 저도 방금 일어났을 뿐입니다.', affection: { momo: 1 }, traits: { considerate: 1 } }
+    { id: 'c3-turn', mode: 'city', narration: true, text: '바로 옆 침상에서 인기척이 들렸다. 고개를 돌리자 처음 보는 소녀가 이불을 끌어안은 채 깊이 잠들어 있었다.' },
+    { id: 'c3-confused', mode: 'city', speaker: '주인공', text: '누구지……? 어젯밤에 누가 들어온 건가?' },
+    { id: 'c3-choice-first', mode: 'city', speaker: '주인공', text: '깨우는 편이 나을까. 아니면 조용히 나가는 편이 나을까.', choices: [
+      {
+        id: 'c3-first-quiet',
+        label: '조용히 나간다.',
+        reply: '괜히 일을 키우지 말자. 일단 길드에 가서 상황부터 확인해야겠다.',
+        traits: { cautious: 1, considerate: 1 },
+        followUp: [
+          { id: 'c3-first-quiet-action', mode: 'city', narration: true, text: '숨을 죽인 채 옷을 챙겨 입고 문고리를 잡았다.' },
+          { id: 'c3-first-quiet-momo', mode: 'city', speaker: '???', text: '……다녀오세요.' },
+          { id: 'c3-first-quiet-look', mode: 'city', narration: true, text: '놀라 뒤를 돌아봤지만 소녀는 여전히 눈을 감고 있었다. 잠꼬대인지, 정말 나에게 한 말인지는 알 수 없었다.' }
+        ]
+      },
+      {
+        id: 'c3-first-wake',
+        label: '모모를 깨운다.',
+        reply: '저기요. 잠시 일어나 보세요.',
+        traits: { brave: 1 },
+        followUp: [
+          { id: 'c3-first-wake-startle', mode: 'city', speaker: '???', text: '흐엣……! 누, 누구세요?' },
+          { id: 'c3-first-wake-distance', mode: 'city', narration: true, text: '소녀는 이불을 끌어당기며 침상 끝으로 물러났다. 나 역시 누구인지 모른다고 설명하자 경계 어린 눈으로 한참 바라봤다.' },
+          { id: 'c3-first-wake-leave', mode: 'city', speaker: '주인공', text: '저도 길드에 확인하러 가겠습니다. 여기서 기다리셔도 됩니다.' }
+        ]
+      },
+      {
+        id: 'c3-first-wait',
+        label: '상황을 정리하려고 잠시 더 누워 있는다.',
+        reply: '섣불리 움직이지 말자. 기억나는 것부터 차근차근 정리해 보자.',
+        traits: { cautious: 1 },
+        followUp: [
+          { id: 'c3-first-wait-think', mode: 'city', narration: true, text: '어제 숲에서 깨어났고, 하루 씨를 따라 도시에 들어왔다. 하지만 이 소녀에 관한 기억은 어디에도 없었다.' },
+          { id: 'c3-first-wait-rise', mode: 'city', narration: true, text: '생각을 마친 뒤 조용히 몸을 일으켰다. 소녀는 여전히 깊이 잠들어 있었다.' }
+        ]
+      }
     ] },
-    { id: 'c3-momo-intro', mode: 'city', speaker: '모모', text: '……모모예요. 저도 가끔 이 숙소를 쓰는데, 어젯밤엔 아무도 없는 줄 알았어요.' },
-    { id: 'c3-awkward', mode: 'city', narration: true, text: '서로 상황을 이해한 뒤에도 어색함은 쉽게 가라앉지 않았다. 모모는 몇 번이나 이쪽을 흘끔거리며 조용히 짐을 챙겼다.' },
-    { id: 'c3-momo-guild', mode: 'city', speaker: '모모', text: '저는 길드에 들러야 하는데…… 선배도 길드에 볼일 있으시죠?' },
-    { id: 'c3-together', mode: 'guild-front', narration: true, text: '우리는 자연스럽게 함께 숙소를 나섰다. 모모는 앞서 걷다가도 내가 따라오는지 몇 번이나 뒤를 돌아봤다.' },
-    { id: 'c3-guild-voice', mode: 'guild-front', narration: true, text: '길드 앞에 도착하자 안쪽에서 높아진 목소리가 문밖까지 새어 나왔다.' },
-    { id: 'c3-master-scold', mode: 'guild-front', speaker: '길드장', text: '신원 확인도 끝나지 않은 사람을 숙소에 들였다고? 문제가 생기면 누가 책임질 생각이었지?' },
-    { id: 'c3-guide-defend', mode: 'guild-front', speaker: '안내원', text: '하루 씨가 직접 보증했고, 하룻밤만 임시로 허가한 겁니다. 그냥 내버려 둘 수도 없었어요.' },
-    { id: 'c3-mc-realize', mode: 'guild-front', speaker: '주인공', text: '……아무래도 제 이야기인 것 같습니다. 들어가 보죠.' },
-    { id: 'c3-momo-nervous', mode: 'guild-front', speaker: '모모', text: '지, 지금 들어가도 괜찮을까요……?' },
-    { id: 'c3-enter', mode: 'city', narration: true, text: '문을 열고 들어가자 안에 있던 사람들의 시선이 한꺼번에 쏠렸다. 길드장도 말을 멈추고 처음 보는 나를 바라봤다.' },
-    { id: 'c3-master-first', mode: 'city', speaker: '길드장', text: '넌 누구지?' },
-    { id: 'c3-mc-intro', mode: 'city', speaker: '주인공', text: '어젯밤 임시 숙소를 사용한 사람입니다. 제 일 때문에 문제가 생긴 것 같아 들어왔습니다.' },
-    { id: 'c3-guide-explain', mode: 'city', speaker: '안내원', text: '하루 씨가 데려온 그분이에요. 기억을 잃은 채 숲에서 발견됐다고 보고드렸습니다.' },
-    { id: 'c3-master-recognize', mode: 'city', narration: true, text: '길드장은 잠시 나를 살펴보다가 책상 위에 놓인 보고서를 집어 들었다.' },
-    { id: 'c3-master-report', mode: 'city', speaker: '길드장', text: '하루의 보고서에 있던 사람이 너였군. 악몽과 맞서 싸웠다는 내용도 적혀 있던데.' },
-    { id: 'c3-momo-notice', mode: 'city', narration: true, text: '조금 떨어져 있던 모모는 그제야 내가 아침에 만난 사람이라는 사실을 알아차리고 작게 움찔했다.' },
-    { id: 'c3-master-apology', mode: 'city', speaker: '길드장', text: '숙소 문제는 네 잘못이 아니다. 길드 내부 절차를 확인하던 중이었으니 신경 쓰지 마라.' },
+    { id: 'c3-leave-alone', mode: 'guild-front', narration: true, text: '결국 혼자 숙소를 나와 길드로 향했다. 낯선 소녀가 누구인지는 길드에 가면 알 수 있을지도 몰랐다.' },
+    { id: 'c3-guild-enter', mode: 'city', narration: true, text: '길드 안으로 들어서자 접수대의 안내원이 나를 알아보고 길드장실로 안내했다.' },
+    { id: 'c3-master-first', mode: 'city', speaker: '길드장', text: '사정은 들었다.' },
+    { id: 'c3-master-distrust', mode: 'city', speaker: '길드장', text: '하지만 신원도 실력도 모르는 사람에게 일을 맡길 수는 없다. 하루가 데려왔다는 이유만으로 널 신뢰할 생각도 없고.' },
+    { id: 'c3-mc-answer', mode: 'city', speaker: '주인공', text: '당연한 판단이었다. 나조차 내가 누구인지 알지 못한다.' },
     { id: 'c3-choice-repay', mode: 'city', speaker: '주인공', text: '그래도 도움만 받고 있을 수는 없었다.', choices: [
-      { id: 'c3-repay-work', label: '할 수 있는 일이 있는지 묻는다.', reply: '당장 돈은 없지만, 제가 도울 수 있는 일이 있다면 하고 싶습니다.', traits: { brave: 1, justice: 1 }, flags: ['accepted_repayment_job'] },
-      { id: 'c3-repay-labor', label: '힘쓰는 일이라도 돕겠다고 한다.', reply: '힘을 쓰는 일이라도 괜찮습니다. 계속 도움만 받을 수는 없습니다.', traits: { justice: 2 } },
-      { id: 'c3-repay-ask', label: '길드에서 사람이 부족한지 묻는다.', reply: '혹시 지금 사람이 부족한 일이 있습니까? 제가 할 수 있는 일이라면 돕겠습니다.', traits: { cautious: 1, considerate: 1 } }
+      { id: 'c3-repay-work', label: '할 수 있는 일이 있는지 묻는다.', reply: '신뢰하기 어렵다는 건 이해합니다. 그래도 제가 할 수 있는 일이 있다면 시켜주십시오.', traits: { brave: 1, justice: 1 } },
+      { id: 'c3-repay-proof', label: '먼저 실력을 증명하겠다고 한다.', reply: '말만으로 믿어 달라고 하지는 않겠습니다. 확인할 방법이 있다면 따르겠습니다.', traits: { brave: 1, cautious: 1 } },
+      { id: 'c3-repay-wait', label: '길드의 판단을 따르겠다고 한다.', reply: '알겠습니다. 확인이 끝날 때까지 길드의 판단을 따르겠습니다.', traits: { considerate: 1, cautious: 1 } }
     ] },
-    { id: 'c3-master-cautious', mode: 'city', speaker: '길드장', text: '처음 보는 사람에게 선뜻 일을 맡길 수는 없다. 이곳의 규칙도, 네 실력도 아직 확인되지 않았으니까.' },
-    { id: 'c3-momo-vouch', mode: 'city', speaker: '모모', text: '저…… 그래도 하루 씨가 데려온 분이고, 보고서에도 싸웠다고 적혀 있잖아요.' },
-    { id: 'c3-momo-shrink', mode: 'city', narration: true, text: '말을 꺼낸 모모는 길드장의 시선이 향하자 금세 목소리가 작아졌다.' },
-    { id: 'c3-master-consider', mode: 'city', narration: true, text: '길드장은 보고서와 나를 번갈아 보며 잠시 생각에 잠겼다.' },
-    { id: 'c3-master-job', mode: 'city', speaker: '길드장', text: '마침 중앙도시 외곽의 방호 시설에 간단한 보수가 필요하다. 위험도는 낮고, 도시에서 멀지도 않다.' },
-    { id: 'c3-master-test', mode: 'city', speaker: '길드장', text: '정식 의뢰를 맡기는 건 아니다. 네가 일을 제대로 해낼 수 있는지 확인하는 정도로 생각해라.' },
-    { id: 'c3-mc-accept', mode: 'city', speaker: '주인공', text: '알겠습니다. 해보겠습니다.' },
-    { id: 'c3-master-assign-momo', mode: 'city', speaker: '길드장', text: '모모. 너도 볼일이 끝났으면 같이 가라. 길을 안내하고 작업 절차를 알려줘.' },
-    { id: 'c3-momo-protest', mode: 'city', speaker: '모모', text: '네? 저, 저도 외곽까지 가야 해요?' },
-    { id: 'c3-master-reassure', mode: 'city', speaker: '길드장', text: '도시에서 멀지 않다. 최근 악몽 출몰 보고도 없는 곳이야.' },
-    { id: 'c3-momo-hesitate', mode: 'city', speaker: '모모', text: '그래도 혹시 모르잖아요…….' },
-    { id: 'c3-master-final', mode: 'city', speaker: '길드장', text: '조금이라도 위험하면 바로 돌아와라. 그 정도는 판단할 수 있겠지?' },
-    { id: 'c3-momo-accept', mode: 'city', speaker: '모모', text: '……네. 위험하면 정말 바로 돌아오는 거예요.' },
-    { id: 'c3-choice-momo', mode: 'city', speaker: '주인공', text: '불안해하는 모모에게 어떻게 말할까.', choices: [
-      { id: 'c3-momo-welcome', label: '폐를 끼치지 않겠다고 말한다.', reply: '최대한 폐를 끼치지 않도록 하겠습니다.', trust: { momo: 1 }, traits: { considerate: 1 } },
-      { id: 'c3-momo-caution', label: '위험하면 바로 돌아가자고 말한다.', reply: '조금이라도 위험하다고 느껴지면 바로 돌아가겠습니다.', affection: { momo: 1 }, traits: { cautious: 1 } },
-      { id: 'c3-momo-thanks', label: '길 안내를 부탁한다.', reply: '그럼 길을 부탁드리겠습니다. 아직 도시 밖은 전혀 모르니까요.', trust: { momo: 1 } }
+    { id: 'c3-door-open', mode: 'city', narration: true, text: '길드장이 대답하려던 순간 문이 조심스럽게 열렸다. 아침에 숙소에서 보았던 소녀가 안쪽을 살피며 들어왔다.' },
+    { id: 'c3-master-calls-momo', mode: 'city', speaker: '길드장', text: '모모. 마침 잘 왔다.' },
+    { id: 'c3-name-realize', mode: 'city', narration: true, text: '그제야 소녀의 이름이 모모라는 것을 알았다. 모모 역시 나를 발견하고 눈에 띄게 굳었다.' },
+    { id: 'c3-momo-startled', mode: 'city', speaker: '모모', text: '저, 저 사람은…….' },
+    { id: 'c3-master-assign', mode: 'city', speaker: '길드장', text: '모모, 오늘은 네가 이 녀석을 데리고 다녀라. 외곽 방호 장치 점검을 도우면서 이상한 행동을 하는지 잘 보고.' },
+    { id: 'c3-master-test', mode: 'city', speaker: '길드장', text: '정식 의뢰가 아니다. 일을 맡길 수 있는 사람인지 시험하고 관찰하는 단계다. 문제라고 판단되면 바로 데리고 돌아와.' },
+    { id: 'c3-momo-fear', mode: 'city', narration: true, text: '모모는 당장이라도 거절하고 싶은 표정이었다. 하지만 길드장의 지시를 외면하지는 못했다.' },
+    { id: 'c3-momo-accept', mode: 'city', speaker: '모모', text: '네…… 알겠습니다.' },
+    { id: 'c3-choice-momo', mode: 'city', speaker: '주인공', text: '부담스러워하는 모모에게 어떻게 말할까.', choices: [
+      { id: 'c3-momo-distance', label: '필요한 거리만 유지하겠다고 말한다.', reply: '불편하게 하지 않겠습니다. 안내만 부탁드리겠습니다.', trust: { momo: 1 }, traits: { considerate: 1 } },
+      { id: 'c3-momo-return', label: '문제가 생기면 바로 돌아오겠다고 한다.', reply: '조금이라도 문제가 생기면 바로 돌아오겠습니다.', affection: { momo: 1 }, traits: { cautious: 1 } },
+      { id: 'c3-momo-silent', label: '말없이 길드장의 지시를 기다린다.', reply: '……알겠습니다.', traits: { cautious: 1 } }
     ] },
-    { id: 'c3-momo-personality', mode: 'city', narration: true, text: '모모는 위험하지 않다는 말을 몇 번이나 되새긴 뒤에야 공구와 부품을 챙겼다. 그러면서도 내가 멀어지면 놓칠세라 바로 뒤를 졸졸 따라왔다.' },
-    { id: 'c3-depart', mode: 'city-gate', narration: true, text: '필요한 공구와 부품을 챙긴 뒤 우리는 중앙도시 외곽으로 향했다.' },
-    { id: 'c3-road-talk', mode: 'forest-exit', speaker: '모모', text: '미리 말해 두는데요. 저는 길이랑 작업 순서만 알려드릴 거예요. 이상한 게 나타나면 바로 돌아가는 거고요.' },
-    { id: 'c3-choice-road', mode: 'forest-exit', speaker: '주인공', text: '모모는 내 옆을 따라오면서도 주변을 계속 살폈다.', choices: [
+    { id: 'c3-tools', mode: 'city', narration: true, text: '모모는 공구와 교체 부품을 챙기면서도 계속 내 움직임을 살폈다. 가까이 다가가면 한 걸음 물러났고, 시선이 마주치면 먼저 피했다.' },
+    { id: 'c3-depart', mode: 'city-gate', narration: true, text: '준비를 마친 뒤 우리는 중앙도시 외곽으로 향했다.' },
+    { id: 'c3-road-first', mode: 'forest-exit', speaker: '모모', text: '저기요…… 저는 길이랑 작업 순서만 알려드릴 거예요. 이상한 행동을 하면 바로 길드로 돌아갈 거고요.' },
+    { id: 'c3-choice-road', mode: 'forest-exit', speaker: '주인공', text: '모모는 나보다 몇 걸음 앞서 걸으며 계속 주변을 확인했다.', choices: [
       { id: 'c3-road-agree', label: '조용히 동의한다.', reply: '네. 그렇게 하겠습니다.', trust: { momo: 1 } },
       { id: 'c3-road-apology', label: '억지로 동행하게 해 미안하다고 한다.', reply: '원해서 오신 게 아닌데 죄송합니다. 최대한 빨리 끝내겠습니다.', affection: { momo: 2 }, traits: { considerate: 1 } },
-      { id: 'c3-road-light', label: '걱정하지 않아도 된다고 말한다.', reply: '보수 작업만 마치고 바로 돌아가죠.', affection: { momo: 1 }, traits: { cautious: 1 } }
+      { id: 'c3-road-question', label: '점검 순서를 물어본다.', reply: '먼저 어떤 장치부터 확인하면 됩니까?', trust: { momo: 1 }, traits: { cautious: 1 } }
     ] },
-    { id: 'c3-outskirts-view', mode: 'forest-exit', narration: true, text: '성벽을 벗어나자 잘 정비된 거리 대신 거친 흙길과 낡은 방호 장치들이 이어졌다.' },
-    { id: 'c3-arrive', mode: 'city-gate', speaker: '모모', text: '저기예요. 저 장치만 고치면 바로 돌아갈 수 있겠죠?' },
+    { id: 'c3-momo-that-person', mode: 'forest-exit', speaker: '모모', text: '그쪽은…… 생각보다 말이 잘 통하네요.' },
+    { id: 'c3-mc-soften', mode: 'forest-exit', speaker: '주인공', text: '그렇게 위험한 사람처럼 보였습니까?' },
+    { id: 'c3-momo-honest', mode: 'forest-exit', speaker: '모모', text: '조금은요. 아니, 꽤 많이요…….' },
+    { id: 'c3-outskirts-view', mode: 'forest-exit', narration: true, text: '짧은 대화가 끝난 뒤에도 어색함은 남아 있었다. 그래도 모모의 걸음은 처음보다 조금 느려져 있었다.' },
+    { id: 'c3-arrive', mode: 'city-gate', speaker: '모모', text: '저기예요. 저 장치부터 확인하면 돼요. 끝날 때까지 제가 옆에서 보고 있을게요.' },
     { id: 'c3-clear', mode: 'black', center: 'CHAPTER 3 CLEAR' },
-    { id: 'c3-end', mode: 'black', ending: true, center: '첫 임무는 전투가 아닌, 귀찮은 보수 작업이었다.' }
+    { id: 'c3-end', mode: 'black', ending: true, center: '정식 의뢰가 아닌 시험. 낯선 두 사람의 불편한 동행이 시작되었다.' }
   ]
 };
