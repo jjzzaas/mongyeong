@@ -1,0 +1,133 @@
+.vn-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vn-btn {
+  min-width: 44px;
+  min-height: 36px;
+}
+
+.vn-input-guarded .vn-next {
+  opacity: .2;
+}
+
+.vn-choice:disabled {
+  opacity: .56;
+  cursor: default;
+  transform: none;
+  filter: grayscale(.18);
+}
+
+.vn-choice:not(:disabled) {
+  cursor: pointer;
+}
+
+.vn-log {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) 14px max(16px, env(safe-area-inset-bottom));
+  background: rgba(1, 4, 9, .82);
+  backdrop-filter: blur(12px);
+}
+
+.vn-log__panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(100%, 820px);
+  height: min(86svh, 760px);
+  overflow: hidden;
+  border: 1px solid rgba(121, 189, 255, .42);
+  background:
+    linear-gradient(180deg, rgba(14, 35, 62, .96), rgba(3, 10, 20, .98));
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .66), 0 0 30px rgba(47, 135, 255, .18);
+  clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+}
+
+.vn-log__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid rgba(126, 190, 255, .22);
+  background: rgba(25, 70, 116, .2);
+}
+
+.vn-log__header span {
+  color: #73bcff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .22em;
+}
+
+.vn-log__header h2 {
+  margin: 4px 0 0;
+  font-size: 20px;
+}
+
+.vn-log__header button {
+  min-width: 62px;
+  min-height: 40px;
+  border: 1px solid rgba(156, 211, 255, .34);
+  color: #eef8ff;
+  background: rgba(111, 183, 255, .08);
+}
+
+.vn-log__content {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 18px 28px;
+  scroll-behavior: smooth;
+}
+
+.vn-log__entry {
+  padding: 15px 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, .09);
+}
+
+.vn-log__entry span {
+  display: block;
+  margin-bottom: 7px;
+  color: #9fd3ff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.vn-log__entry p {
+  margin: 0;
+  color: rgba(244, 249, 255, .9);
+  font-size: 15px;
+  line-height: 1.72;
+  word-break: keep-all;
+}
+
+.vn-log__empty {
+  margin: 0;
+  padding: 42px 0;
+  color: rgba(255, 255, 255, .5);
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .vn-controls {
+    gap: 8px;
+  }
+
+  .vn-btn {
+    padding-inline: 2px;
+    font-size: 12px;
+  }
+
+  .vn-log__panel {
+    height: calc(100svh - max(26px, env(safe-area-inset-top)) - max(26px, env(safe-area-inset-bottom)));
+  }
+
+  .vn-log__content {
+    padding-inline: 16px;
+  }
+}
