@@ -34,7 +34,7 @@ export const chapter002 = {
     { id: 'c2-haru-leave', mode: 'city', speaker: '하루', text: '저는 남은 임무 보고를 마치고 바로 다른 일정으로 가야 해요. 내일 다시 길드로 오세요.' },
     { id: 'c2-guide-key', mode: 'city', speaker: '안내원', text: '임시 숙소는 공동 사용 구역이에요. 빈 침상을 하나 쓰시면 됩니다. 오늘 밤까지만 허가할게요.' },
     { id: 'c2-room-walk', mode: 'city', narration: true, text: '안내원을 따라 길드 뒤편의 낡은 숙소 건물로 향했다. 화려하지는 않았지만 비바람을 피할 수 있는 곳이었다.' },
-    { id: 'c2-room-enter', mode: 'black', narration: true, text: '방 안에는 침상 두 개와 작은 창문, 낡은 옷장이 전부였다. 다른 침상은 비어 있었다.' },
+    { id: 'c2-room-enter', mode: 'black', narration: true, text: '방 안에는 침상 하나와 작은 창문, 낡은 옷장이 전부였다.' },
     { id: 'c2-alone', mode: 'black', speaker: '주인공', text: '하룻밤뿐이다. 내일은 내가 누구인지, 여기서 무엇을 해야 하는지 알아내야 한다.' },
     { id: 'c2-sleep', mode: 'black', narration: true, text: '몸을 눕히자 하루 동안 억지로 붙잡고 있던 긴장이 풀렸다. 의식은 금세 깊은 어둠 속으로 가라앉았다.' },
     { id: 'c2-clear', mode: 'black', center: 'CHAPTER 2 CLEAR' },
