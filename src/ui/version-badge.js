@@ -1,2 +1,2 @@
 const versionButton = document.querySelector('#versionButton');
-if (versionButton) versionButton.textContent = 'VN 1.7';
+if (versionButton) versionButton.textContent = 'VN 1.8';
