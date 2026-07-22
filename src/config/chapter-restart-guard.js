@@ -3,6 +3,14 @@
   const CHAPTER_START_KEY = 'mongyeong-vn-chapter-start-v1';
   const RESTART_PENDING_KEY = 'mongyeong-vn-chapter-restart-pending';
   const originalSetItem = Storage.prototype.setItem;
+  const characterNames = { haru: '하루', momo: '모모', sena: '세나' };
+  const traitNames = {
+    cautious: '신중함',
+    brave: '용기',
+    considerate: '배려',
+    justice: '정의감',
+    calm: '냉정함',
+  };
 
   function parseJson(value, fallback = null) {
     try {
@@ -10,6 +18,10 @@
     } catch {
       return fallback;
     }
+  }
+
+  function clone(value) {
+    return value == null ? value : JSON.parse(JSON.stringify(value));
   }
 
   function readSave() {
@@ -24,16 +36,50 @@
     originalSetItem.call(localStorage, key, value);
   }
 
+  function subtractValues(target, changes, nameMap = {}) {
+    Object.entries(changes || {}).forEach(([name, amount]) => {
+      const resolvedName = nameMap[name] || name;
+      target[resolvedName] = (Number(target[resolvedName]) || 0) - Number(amount || 0);
+    });
+  }
+
+  function rewindCurrentChapterChoices(savedState, currentChapterId) {
+    const state = clone(savedState) || {};
+    const history = Array.isArray(state.choiceHistory) ? state.choiceHistory : [];
+    const currentChoices = history.filter((choice) => String(choice?.chapter) === String(currentChapterId));
+    const previousChoices = history.filter((choice) => String(choice?.chapter) !== String(currentChapterId));
+
+    state.affection = { ...(state.affection || {}) };
+    state.trust = { ...(state.trust || {}) };
+    state.traits = { ...(state.traits || {}) };
+    state.flags = { ...(state.flags || {}) };
+
+    currentChoices.forEach((choice) => {
+      subtractValues(state.affection, choice.affection, characterNames);
+      subtractValues(state.trust, choice.trust, characterNames);
+      subtractValues(state.traits, choice.traits, traitNames);
+    });
+
+    const flagsStillUsed = new Set(previousChoices.flatMap((choice) => choice?.flags || []));
+    currentChoices.flatMap((choice) => choice?.flags || []).forEach((flag) => {
+      if (!flagsStillUsed.has(flag)) delete state.flags[flag];
+    });
+
+    state.choiceHistory = previousChoices;
+    state.currentScene = '';
+    return state;
+  }
+
   function createChapterStartSnapshot(save) {
     const currentChapterId = save?.gameState?.currentChapter;
     const previousDialogueLog = Array.isArray(save?.dialogueLog)
-      ? save.dialogueLog.filter((entry) => entry?.chapter !== currentChapterId)
+      ? save.dialogueLog.filter((entry) => String(entry?.chapter) !== String(currentChapterId))
       : [];
 
     return {
       chapterIndex: save.chapterIndex,
       index: 0,
-      gameState: save.gameState,
+      gameState: rewindCurrentChapterChoices(save.gameState, currentChapterId),
       dialogueLog: previousDialogueLog,
       savedAt: Date.now(),
       chapterCleared: false,
