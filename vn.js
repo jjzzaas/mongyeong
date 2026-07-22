@@ -35,7 +35,7 @@ app.innerHTML = `
 
     <header class="vn-topbar">
       <span class="vn-title-mark">夢境 : 잠든 세계</span>
-      <button class="vn-version" id="versionButton" type="button" aria-label="버전 정보">VN 1.4</button>
+      <button class="vn-version" id="versionButton" type="button" aria-label="버전 정보">VN 1.6</button>
     </header>
 
     <div class="vn-controls">
