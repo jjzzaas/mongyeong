@@ -4,7 +4,7 @@ import { chapter003 } from './src/chapters/001-010/chapter-003.js';
 import { chapter004 } from './src/chapters/001-010/chapter-004.js';
 import { chapter005 } from './src/chapters/001-010/chapter-005.js';
 import { chapter006 } from './src/chapters/001-010/chapter-006.js';
-import { createInitialGameState, recordChoice } from './src/config/game-state.js';
+import { createInitialGameState, normalizeGameState, recordChoice } from './src/config/game-state.js';
 import { createDeveloperTapDetector, getDeveloperSnapshot } from './src/config/developer-mode.js';
 import { createDeveloperPanel, openDeveloperPanel } from './src/ui/developer-panel.js';
 
@@ -27,6 +27,7 @@ let gameState = createInitialGameState();
 let inputBlockedUntil = 0;
 let dialogueLog = [];
 let loggedSceneKeys = new Set();
+let chapterStartSnapshot = null;
 
 app.innerHTML = `
   <main class="vn-shell blackout" aria-label="夢境 비주얼 노벨">
@@ -35,7 +36,7 @@ app.innerHTML = `
 
     <header class="vn-topbar">
       <span class="vn-title-mark">夢境 : 잠든 세계</span>
-      <button class="vn-version" id="versionButton" type="button" aria-label="버전 정보">VN 1.6</button>
+      <button class="vn-version" id="versionButton" type="button" aria-label="버전 정보">VN 1.7</button>
     </header>
 
     <div class="vn-controls">
@@ -55,10 +56,7 @@ app.innerHTML = `
     <section class="vn-log vn-hidden" id="dialogueLog" aria-label="대화 기록" aria-modal="true" role="dialog">
       <div class="vn-log__panel">
         <header class="vn-log__header">
-          <div>
-            <span>STORY LOG</span>
-            <h2>대화 기록</h2>
-          </div>
+          <div><span>STORY LOG</span><h2>대화 기록</h2></div>
           <button id="closeLogButton" type="button" aria-label="대화 기록 닫기">닫기</button>
         </header>
         <div class="vn-log__content" id="dialogueLogContent"></div>
@@ -97,6 +95,10 @@ const detectDeveloperTap = createDeveloperTapDetector({
   onUnlock: () => openDeveloperPanel(developerPanel, getDeveloperSnapshot(gameState)),
 });
 
+function clone(value) {
+  return structuredClone(value);
+}
+
 function getCurrentChapter() {
   return chapters[chapterIndex];
 }
@@ -115,11 +117,19 @@ function isInputBlocked() {
 
 function loadChapter(nextChapterIndex, nextSceneIndex = 0) {
   chapterIndex = Math.max(0, Math.min(nextChapterIndex, chapters.length - 1));
-  scenes = getCurrentChapter().scenes.map((scene) => ({ ...scene }));
+  scenes = getCurrentChapter().scenes.map((scene) => clone(scene));
   index = Math.max(0, Math.min(nextSceneIndex, scenes.length - 1));
   locked = false;
   stopTyping();
   blockInput(IMPORTANT_INPUT_GUARD_MS);
+}
+
+function captureChapterStart() {
+  chapterStartSnapshot = {
+    chapterIndex,
+    gameState: clone(gameState),
+    dialogueLogLength: dialogueLog.length,
+  };
 }
 
 function applyMode(mode) {
@@ -155,34 +165,19 @@ function saveProgress() {
     index,
     gameState,
     dialogueLog,
+    chapterStartSnapshot,
     savedAt: Date.now(),
   }));
   continueButton.classList.remove('vn-hidden');
 }
 
 function getCenterContent(scene) {
-  if (scene.id === 'c1-clear') {
+  if (/-clear$/i.test(scene.id || '')) {
     return `
       <div class="chapter-clear-card">
         <span class="chapter-clear-card__eyebrow">MISSION COMPLETE</span>
-        <strong>CHAPTER 1 CLEAR</strong>
-        <span class="chapter-clear-card__title">낯선 세계</span>
-        <small>화면을 터치해 계속</small>
-      </div>
-    `;
-  }
-
-  if (scene.id === 'c1-end') {
-    return `
-      <div class="status-window">
-        <div class="status-window__scan" aria-hidden="true"></div>
-        <span class="status-window__label">STATUS UPDATE</span>
-        <h2>레벨 상승</h2>
-        <div class="status-window__level">
-          <span>Lv. 1</span><b>→</b><strong>Lv. 2</strong>
-        </div>
-        <div class="status-window__line"></div>
-        <p>챕터 1 클리어 보상이 적용되었습니다.</p>
+        <strong>CHAPTER ${getCurrentChapter().id} CLEAR</strong>
+        <span class="chapter-clear-card__title">${getCurrentChapter().title}</span>
         <small>화면을 터치해 계속</small>
       </div>
     `;
@@ -198,19 +193,20 @@ function getSceneLogKey(scene) {
 function recordSceneInLog(scene) {
   const value = scene.text || scene.center || '';
   if (!value) return;
-
   const key = getSceneLogKey(scene);
   if (loggedSceneKeys.has(key)) return;
   loggedSceneKeys.add(key);
-
   dialogueLog.push({
     chapter: getCurrentChapter().id,
     sceneId: scene.id,
     speaker: scene.narration ? '내레이션' : (scene.speaker || (scene.center ? '시스템' : '')),
     text: value,
   });
-
   if (dialogueLog.length > 250) dialogueLog = dialogueLog.slice(-250);
+}
+
+function rebuildLoggedSceneKeys() {
+  loggedSceneKeys = new Set(dialogueLog.map((entry, entryIndex) => `${entry.chapter}:${entry.sceneId}:${entryIndex}`));
 }
 
 function renderDialogueLog() {
@@ -218,14 +214,12 @@ function renderDialogueLog() {
     dialogueLogContent.innerHTML = '<p class="vn-log__empty">아직 기록된 대사가 없습니다.</p>';
     return;
   }
-
   dialogueLogContent.innerHTML = dialogueLog.map((entry) => `
     <article class="vn-log__entry">
       <span>${entry.speaker || '기록'}</span>
       <p>${escapeHtml(entry.text).replaceAll('\n', '<br>')}</p>
     </article>
   `).join('');
-
   dialogueLogContent.scrollTop = dialogueLogContent.scrollHeight;
 }
 
@@ -262,6 +256,29 @@ function isImportantScene(scene) {
   );
 }
 
+function appendFollowUpScenes(scene, choice) {
+  const inserted = [];
+  if (choice.reply) {
+    inserted.push({
+      id: `choice-reply-${scene.id}-${choice.id}`,
+      mode: scene.mode,
+      speaker: '주인공',
+      text: choice.reply,
+      temporary: true,
+    });
+  }
+  if (Array.isArray(choice.followUp)) {
+    choice.followUp.forEach((followUp, followUpIndex) => {
+      inserted.push({
+        ...clone(followUp),
+        id: followUp.id || `choice-follow-up-${scene.id}-${choice.id}-${followUpIndex}`,
+        temporary: true,
+      });
+    });
+  }
+  if (inserted.length) scenes.splice(index + 1, 0, ...inserted);
+}
+
 function renderScene() {
   const scene = scenes[index];
   if (!scene) return;
@@ -269,10 +286,9 @@ function renderScene() {
   gameState.currentChapter = getCurrentChapter().id;
   gameState.currentScene = scene.id;
 
-  const isStatusScene = scene.id === 'c1-end';
-  applyMode(isStatusScene ? 'status' : (scene.mode || 'black'));
+  applyMode(scene.mode || 'black');
   centerText.classList.toggle('vn-hidden', !scene.center);
-  centerText.classList.toggle('vn-center-text--system', scene.id === 'c1-clear' || isStatusScene);
+  centerText.classList.toggle('vn-center-text--system', /-clear$/i.test(scene.id || '') || scene.mode === 'status');
   centerText.innerHTML = getCenterContent(scene);
 
   const hasDialogue = Boolean(scene.text || scene.speaker || scene.narration);
@@ -286,11 +302,7 @@ function renderScene() {
   locked = false;
 
   recordSceneInLog(scene);
-
-  const guardDuration = scene.choices
-    ? CHOICE_INPUT_GUARD_MS
-    : (isImportantScene(scene) ? IMPORTANT_INPUT_GUARD_MS : NORMAL_INPUT_GUARD_MS);
-  blockInput(guardDuration);
+  blockInput(scene.choices ? CHOICE_INPUT_GUARD_MS : (isImportantScene(scene) ? IMPORTANT_INPUT_GUARD_MS : NORMAL_INPUT_GUARD_MS));
 
   if (scene.choices) {
     locked = true;
@@ -302,15 +314,11 @@ function renderScene() {
       button.className = 'vn-choice';
       button.textContent = choice.label;
       button.disabled = true;
-
-      window.setTimeout(() => {
-        button.disabled = false;
-      }, CHOICE_INPUT_GUARD_MS);
+      window.setTimeout(() => { button.disabled = false; }, CHOICE_INPUT_GUARD_MS);
 
       button.addEventListener('click', (event) => {
         event.stopPropagation();
         if (button.disabled || isInputBlocked()) return;
-
         const requiresConfirmation = Boolean(choice.important || scene.importantChoice);
         if (requiresConfirmation && !window.confirm('이 선택은 이후 관계나 이야기에 영향을 줄 수 있습니다.\n정말 선택하시겠습니까?')) {
           blockInput(300);
@@ -319,7 +327,6 @@ function renderScene() {
 
         stopTyping(true);
         locked = false;
-
         gameState.currentScene = scene.id;
         gameState = recordChoice(gameState, choice);
         dialogueLog.push({
@@ -329,17 +336,7 @@ function renderScene() {
           text: choice.label,
         });
 
-        const nextScene = scenes[index + 1];
-        if (nextScene && choice.reply) {
-          scenes.splice(index + 1, 0, {
-            id: `choice-reply-${scene.id}`,
-            mode: scene.mode,
-            speaker: '주인공',
-            text: choice.reply,
-            temporary: true,
-          });
-        }
-
+        appendFollowUpScenes(scene, choice);
         index += 1;
         renderScene();
         saveProgress();
@@ -349,6 +346,114 @@ function renderScene() {
     });
   }
 
+  saveProgress();
+}
+
+function makeDecisionButton(label, onClick) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'vn-choice';
+  button.textContent = label;
+  button.disabled = true;
+  button.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (button.disabled || isInputBlocked()) return;
+    onClick();
+  });
+  window.setTimeout(() => { button.disabled = false; }, CHOICE_INPUT_GUARD_MS);
+  choices.appendChild(button);
+}
+
+function renderChapterDecision() {
+  stopTyping();
+  locked = true;
+  applyMode('black');
+  dialogue.classList.add('vn-hidden');
+  centerText.classList.remove('vn-hidden');
+  centerText.classList.add('vn-center-text--system');
+  centerText.innerHTML = `
+    <div class="status-window chapter-decision-window">
+      <span class="status-window__label">CHAPTER CONFIRM</span>
+      <h2>다음 챕터로 진행하시겠습니까?</h2>
+      <div class="status-window__line"></div>
+      <p>다음 챕터로 넘어가면 현재 챕터의 선택은 확정되며 다시 변경할 수 없습니다.</p>
+    </div>
+  `;
+  choices.innerHTML = '';
+  choices.classList.remove('vn-hidden');
+  blockInput(CHOICE_INPUT_GUARD_MS);
+  makeDecisionButton('다음 챕터로 진행', confirmCurrentChapter);
+  makeDecisionButton('현재 챕터 다시하기', restartCurrentChapter);
+}
+
+function restartCurrentChapter() {
+  if (!chapterStartSnapshot) return;
+  gameState = normalizeGameState(clone(chapterStartSnapshot.gameState));
+  dialogueLog = dialogueLog.slice(0, chapterStartSnapshot.dialogueLogLength);
+  rebuildLoggedSceneKeys();
+  loadChapter(chapterStartSnapshot.chapterIndex, 0);
+  renderScene();
+  saveProgress();
+}
+
+function confirmCurrentChapter() {
+  locked = true;
+  const currentLevel = Number(gameState.status?.레벨 || getCurrentChapter().id);
+  const nextLevel = Math.max(currentLevel, getCurrentChapter().id + 1);
+  gameState = normalizeGameState(gameState);
+  gameState.status.레벨 = nextLevel;
+  gameState.flags[`chapter_${getCurrentChapter().id}_confirmed`] = true;
+  renderLevelUp(currentLevel, nextLevel);
+  saveProgress();
+}
+
+function renderLevelUp(beforeLevel, nextLevel) {
+  stopTyping();
+  applyMode('status');
+  dialogue.classList.add('vn-hidden');
+  choices.classList.add('vn-hidden');
+  centerText.classList.remove('vn-hidden');
+  centerText.classList.add('vn-center-text--system');
+  centerText.innerHTML = `
+    <div class="status-window">
+      <div class="status-window__scan" aria-hidden="true"></div>
+      <span class="status-window__label">STATUS UPDATE</span>
+      <h2>레벨 상승</h2>
+      <div class="status-window__level">
+        <span>Lv. ${beforeLevel}</span><b>→</b><strong>Lv. ${nextLevel}</strong>
+      </div>
+      <div class="status-window__line"></div>
+      <p>챕터 ${getCurrentChapter().id} 클리어 보상이 적용되었습니다.</p>
+      <small>화면을 터치해 계속</small>
+    </div>
+  `;
+  blockInput(IMPORTANT_INPUT_GUARD_MS);
+  shell.addEventListener('click', finishChapterTransition, { once: true });
+}
+
+function finishChapterTransition(event) {
+  if (event?.target?.closest('button, .vn-log, .developer-panel') || isInputBlocked()) {
+    shell.addEventListener('click', finishChapterTransition, { once: true });
+    return;
+  }
+
+  if (chapterIndex >= chapters.length - 1) {
+    locked = true;
+    centerText.innerHTML = `
+      <div class="status-window">
+        <span class="status-window__label">STORY COMPLETE</span>
+        <h2>준비된 챕터를 모두 완료했습니다.</h2>
+      </div>
+    `;
+    saveProgress();
+    return;
+  }
+
+  loadChapter(chapterIndex + 1, 0);
+  gameState.currentChapter = getCurrentChapter().id;
+  gameState.currentScene = scenes[0]?.id || '';
+  captureChapterStart();
+  renderScene();
   saveProgress();
 }
 
@@ -363,22 +468,20 @@ function advance(event) {
     return;
   }
 
+  const currentScene = scenes[index];
+  if (/-clear$/i.test(currentScene?.id || '')) {
+    renderChapterDecision();
+    return;
+  }
+
   if (index < scenes.length - 1) {
-    if (scenes[index]?.temporary) scenes.splice(index, 1);
+    if (currentScene?.temporary) scenes.splice(index, 1);
     else index += 1;
     renderScene();
     return;
   }
 
-  if (chapterIndex < chapters.length - 1) {
-    loadChapter(chapterIndex + 1, 0);
-    renderScene();
-    saveProgress();
-  }
-}
-
-function rebuildLoggedSceneKeys() {
-  loggedSceneKeys = new Set(dialogueLog.map((entry, entryIndex) => `${entry.chapter}:${entry.sceneId}:${entryIndex}`));
+  renderChapterDecision();
 }
 
 function startGame(fromSave = false) {
@@ -391,13 +494,17 @@ function startGame(fromSave = false) {
     const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
     const savedChapter = Number.isInteger(saved.chapterIndex) ? saved.chapterIndex : 0;
     const savedScene = Number.isInteger(saved.index) ? saved.index : 0;
-    loadChapter(savedChapter, savedScene);
-    gameState = saved.gameState || createInitialGameState();
+    gameState = normalizeGameState(saved.gameState || createInitialGameState());
     dialogueLog = Array.isArray(saved.dialogueLog) ? saved.dialogueLog : [];
+    chapterStartSnapshot = saved.chapterStartSnapshot ? clone(saved.chapterStartSnapshot) : null;
+    loadChapter(savedChapter, savedScene);
     rebuildLoggedSceneKeys();
+    if (!chapterStartSnapshot) captureChapterStart();
   } else {
-    loadChapter(0, 0);
     gameState = createInitialGameState();
+    dialogueLog = [];
+    loadChapter(0, 0);
+    captureChapterStart();
     localStorage.removeItem(SAVE_KEY);
   }
 
@@ -413,8 +520,9 @@ function restartGame(event) {
   locked = false;
   dialogueLog = [];
   loggedSceneKeys = new Set();
-  loadChapter(0, 0);
+  chapterStartSnapshot = null;
   gameState = createInitialGameState();
+  loadChapter(0, 0);
   developerPanel.hidden = true;
   dialogueLogPanel.classList.add('vn-hidden');
   startScreen.classList.remove('vn-hidden');
@@ -431,12 +539,10 @@ document.querySelector('#startButton').addEventListener('click', (event) => {
   event.stopPropagation();
   startGame(false);
 });
-
 continueButton.addEventListener('click', (event) => {
   event.stopPropagation();
   startGame(true);
 });
-
 document.querySelector('#restart').addEventListener('click', restartGame);
 logButton.addEventListener('click', openDialogueLog);
 closeLogButton.addEventListener('click', closeDialogueLog);
