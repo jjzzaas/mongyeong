@@ -4,8 +4,8 @@ const speaker = document.querySelector('#speaker');
 if (shell && speaker) {
   const visual = document.createElement('img');
   visual.className = 'haru-visual-test';
-  visual.src = './public/images/characters/haru/file_00000000f08c8209b694096c79042f4b.png';
-  visual.alt = '';
+  visual.src = './public/images/characters/haru/neutral/haru_neutral.png';
+  visual.alt = '하루';
   visual.setAttribute('aria-hidden', 'true');
   shell.insertBefore(visual, shell.querySelector('.vn-vignette'));
 
