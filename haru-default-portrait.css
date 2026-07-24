@@ -11,7 +11,7 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity 180ms ease;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
   filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.24));
 }
@@ -19,18 +19,6 @@
 .haru-default-portrait.is-visible {
   opacity: 1;
   visibility: visible;
-}
-
-.vn-vignette,
-.vn-topbar,
-.vn-controls,
-.vn-center-text,
-.vn-choices,
-.vn-dialogue,
-.vn-log,
-.vn-start {
-  position: relative;
-  z-index: 2;
 }
 
 @media (max-width: 480px) {
