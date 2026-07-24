@@ -1,0 +1,50 @@
+export const chapter008 = {
+  id: 8,
+  title: '처음 만난 힐러',
+  scenes: [
+    { id: 'c8-title', mode: 'black', center: 'CHAPTER 8\n\n처음 만난 힐러' },
+    { id: 'c8-next-morning', mode: 'city', narration: true, text: '다음 날 아침, 주인공은 의뢰서에 적힌 시간에 맞춰 도시 외곽의 집결 장소로 향했다.' },
+    { id: 'c8-sena-wait', mode: 'city', narration: true, text: '성문 근처에는 한 여성이 먼저 도착해 있었다. 간단한 장비 외에는 눈에 띄는 무기도 보이지 않았다.' },
+    { id: 'c8-sena-intro', mode: 'city', speaker: '세나', text: '안녕하세요. 오늘 함께 의뢰를 맡은 세나예요. 회복과 지원을 담당하고 있어요.' },
+    { id: 'c8-mc-intro', mode: 'city', speaker: '주인공', text: '저는…… 아직 기억이 돌아오지 않아서 길드에 등록한 이름을 쓰고 있습니다. 잘 부탁드립니다.' },
+    { id: 'c8-sena-calm', mode: 'city', speaker: '세나', text: '첫 정식 의뢰라고 들었어요. 너무 긴장하지 않아도 돼요. 이번 임무는 둘이서 물자를 받아 돌아오는 일이니까요.' },
+    { id: 'c8-two-party', mode: 'status', center: '파티 편성\n\n주인공  전투\n세나  회복·지원\n\n파티 인원  2명' },
+    { id: 'c8-depart', mode: 'city', narration: true, text: '두 사람은 나란히 도시를 벗어났다. 목적지는 인접 도시의 호송대와 만나기로 한 중간 지점이었다.' },
+    { id: 'c8-choice-talk', mode: 'city', speaker: '주인공', text: '한동안 조용히 걷던 세나가 먼저 속도를 맞춰 주었다.', choices: [
+      { id: 'c8-talk-thanks', label: '속도를 맞춰 줘서 감사하다고 말한다.', reply: '제게 맞춰 주신 것 같습니다. 감사합니다.', affection: { sena: 1 }, trust: { sena: 1 } },
+      { id: 'c8-talk-role', label: '힐러의 역할에 관해 묻는다.', reply: '회복과 지원은 전투 중에 어떻게 이루어집니까?', trust: { sena: 2 }, traits: { cautious: 1 } },
+      { id: 'c8-talk-mission', label: '임무에 집중하겠다고 말한다.', reply: '첫 의뢰인 만큼 방심하지 않겠습니다.', trust: { sena: 1 }, traits: { calm: 1 } }
+    ] },
+    { id: 'c8-sena-answer', mode: 'city', speaker: '세나', text: '다치지 않는 게 가장 좋지만, 전투에서는 모든 공격을 피할 수 없어요. 치명상만 피하면 바로 회복해서 흐름을 이어갈 수 있어요.' },
+    { id: 'c8-mc-unsure', mode: 'city', narration: true, text: '말은 이해했지만 실제 전투에서 상처를 감수한다는 방식은 쉽게 와닿지 않았다.' },
+    { id: 'c8-near-point', mode: 'battle', narration: true, text: '중간 지점이 멀지 않은 곳까지 왔을 때, 앞쪽 수풀에서 거친 마찰음이 연달아 들려왔다.' },
+    { id: 'c8-nightmares', mode: 'battle', center: '악몽 무리 출현' },
+    { id: 'c8-sena-ready', mode: 'battle', speaker: '세나', text: '물러서지 마세요. 서로의 시야에서 벗어나지만 않으면 됩니다.' },
+    { id: 'c8-first-clash', mode: 'battle', narration: true, text: '악몽들이 동시에 달려들었다. 주인공은 구현한 짧은 검으로 가장 가까운 개체의 공격을 받아내고 옆으로 흘렸다.' },
+    { id: 'c8-mc-fight', mode: 'battle', narration: true, text: '훈련용 표적과는 달랐지만 몸은 예상보다 빠르게 반응했다. 검은 아직 불안정했으나 한두 번의 충돌로 사라지지는 않았다.' },
+    { id: 'c8-sena-style', mode: 'battle', narration: true, text: '세나는 공격을 완전히 피하려 애쓰기보다 급소를 정확히 비켜냈다. 팔과 어깨에 스친 상처는 곧바로 따뜻한 빛에 감싸여 흔적도 없이 사라졌다.' },
+    { id: 'c8-healing-sense', mode: 'battle', narration: true, text: '회복의 빛이 번지는 순간, 주인공은 낯익은 온기를 느꼈다. 훈련장에서 의식을 잃었을 때 몸 안으로 스며들었던 감각과 닮아 있었다.' },
+    { id: 'c8-memory-link', mode: 'battle', speaker: '주인공', text: '이 느낌…… 혹시 그때 훈련장에서……?' },
+    { id: 'c8-sena-focus', mode: 'battle', speaker: '세나', text: '지금은 앞을 보세요. 오른쪽에서 옵니다!' },
+    { id: 'c8-choice-battle', mode: 'battle', speaker: '주인공', text: '생각을 접고 다시 검을 들었다.', choices: [
+      { id: 'c8-battle-guard', label: '세나의 앞을 지킨다.', reply: '제가 앞을 막겠습니다. 세나 씨는 뒤에서 지원해 주세요.', trust: { sena: 2 }, traits: { considerate: 1 } },
+      { id: 'c8-battle-together', label: '서로의 위치를 확인하며 싸운다.', reply: '서로 보이는 거리에서 움직이겠습니다.', trust: { sena: 2 }, traits: { cautious: 1 } },
+      { id: 'c8-battle-charge', label: '남은 악몽을 빠르게 밀어붙인다.', reply: '수가 더 늘기 전에 끝내겠습니다.', traits: { brave: 2 } }
+    ] },
+    { id: 'c8-battle-turn', mode: 'battle', narration: true, text: '두 사람은 조금씩 악몽 무리를 밀어냈다. 주인공은 거칠지만 호전했고, 세나는 흔들림 없이 회복과 견제를 이어갔다.' },
+    { id: 'c8-last-nightmare', mode: 'battle', narration: true, text: '마지막 남은 악몽이 갑자기 방향을 틀어 세나에게 달려들었다. 날카로운 발톱이 그녀의 옆구리를 향했다.' },
+    { id: 'c8-sena-judgment', mode: 'battle', narration: true, text: '세나는 공격의 궤적을 읽고 급소만 비켜내려 했다. 옆구리에 상처를 입더라도 즉시 치료할 수 있다는 판단이었다.' },
+    { id: 'c8-mc-misread', mode: 'battle', narration: true, text: '하지만 그런 전투 방식에 익숙하지 않은 주인공에게는 세나가 공격을 피하지 못한 것처럼 보였다.' },
+    { id: 'c8-danger', mode: 'black', speaker: '주인공', text: '위험해.' },
+    { id: 'c8-shield', mode: 'battle', narration: true, text: '생각보다 몸이 먼저 움직였다. 주인공은 세나를 옆으로 밀어내며 두 사람 사이에 몸을 집어넣었다.' },
+    { id: 'c8-injury', mode: 'black', center: '푹—' },
+    { id: 'c8-wound', mode: 'battle', narration: true, text: '악몽의 발톱이 주인공의 옆구리를 깊게 파고들었다. 뜨거운 통증과 함께 다리에 힘이 빠졌다.' },
+    { id: 'c8-sena-shock', mode: 'battle', speaker: '세나', text: '왜…… 왜 대신 막은 거예요! 저는 피할 수 있었는데!' },
+    { id: 'c8-mc-fall', mode: 'battle', speaker: '주인공', text: '세나 씨가…… 위험한 줄 알았습니다.' },
+    { id: 'c8-heal-fail-start', mode: 'battle', narration: true, text: '세나가 곧바로 주인공의 상처에 손을 얹었다. 익숙한 따뜻한 빛이 번졌지만, 찢어진 상처는 예상처럼 닫히지 않았다.' },
+    { id: 'c8-sena-confused', mode: 'battle', speaker: '세나', text: '잠깐만요…… 왜 회복이 안 되는 거죠?' },
+    { id: 'c8-final', mode: 'black', narration: true, text: '의식이 흐려지는 가운데 주인공은 다시 한번 그 따뜻한 감각을 느꼈다. 이번에는 그 온기의 주인이 누구인지 분명히 알 수 있었다.' },
+    { id: 'c8-clear', mode: 'black', center: 'CHAPTER 8 CLEAR' },
+    { id: 'c8-end', mode: 'black', ending: true, center: '첫 정식 의뢰 도중 주인공이 부상을 입었다.' }
+  ]
+};
