@@ -1,0 +1,42 @@
+.haru-default-portrait {
+  position: absolute;
+  left: 50%;
+  bottom: calc(max(8px, env(safe-area-inset-bottom)) + 48px);
+  width: auto;
+  height: min(82svh, 980px);
+  max-width: 100vw;
+  object-fit: contain;
+  object-position: center bottom;
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 180ms ease;
+  z-index: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.24));
+}
+
+.haru-default-portrait.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.vn-vignette,
+.vn-topbar,
+.vn-controls,
+.vn-center-text,
+.vn-choices,
+.vn-dialogue,
+.vn-log,
+.vn-start {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 480px) {
+  .haru-default-portrait {
+    bottom: calc(max(7px, env(safe-area-inset-bottom)) + 42px);
+    height: min(80svh, 900px);
+    max-width: 104vw;
+  }
+}
