@@ -32,13 +32,23 @@ const 성향이름변환 = {
   냉정함: '냉정함',
 };
 
+const 능력치목록 = ['힘', '민첩', '체력', '정신력'];
+
+export const getStatusForLevel = (level = 1) => {
+  const safeLevel = Math.max(1, Math.floor(Number(level) || 1));
+
+  return {
+    레벨: safeLevel,
+    힘: safeLevel,
+    민첩: safeLevel,
+    체력: safeLevel,
+    정신력: safeLevel,
+  };
+};
+
 const 기본스테이터스 = {
   이름: '미상',
-  레벨: 1,
-  힘: 1,
-  민첩: 1,
-  체력: 1,
-  정신력: 1,
+  ...getStatusForLevel(1),
   스킬: [],
   구현무기: '없음',
 };
@@ -78,11 +88,16 @@ const 합치기 = (기본값, 저장값 = {}, 이름변환 = {}) => {
   return 결과;
 };
 
-const 스테이터스합치기 = (저장값 = {}) => ({
-  ...기본스테이터스,
-  ...저장값,
-  스킬: Array.isArray(저장값.스킬) ? 저장값.스킬 : [],
-});
+const 스테이터스합치기 = (저장값 = {}) => {
+  const 레벨능력치 = getStatusForLevel(저장값.레벨);
+
+  return {
+    ...기본스테이터스,
+    ...저장값,
+    ...레벨능력치,
+    스킬: Array.isArray(저장값.스킬) ? 저장값.스킬 : [],
+  };
+};
 
 export const normalizeGameState = (savedState = {}) => {
   const 기본상태 = createInitialGameState();
@@ -103,13 +118,17 @@ export const updateStatus = (state, changes = {}) => {
   const nextState = normalizeGameState(structuredClone(state));
   const current = nextState.status;
 
-  ['레벨', '힘', '민첩', '체력', '정신력'].forEach((key) => {
-    if (Number.isFinite(changes[key])) current[key] = Math.max(0, changes[key]);
-  });
+  if (Number.isFinite(changes.레벨)) {
+    Object.assign(current, getStatusForLevel(changes.레벨));
+  }
 
   if (typeof changes.이름 === 'string') current.이름 = changes.이름;
   if (typeof changes.구현무기 === 'string') current.구현무기 = changes.구현무기;
   if (Array.isArray(changes.스킬)) current.스킬 = [...changes.스킬];
+
+  능력치목록.forEach((key) => {
+    current[key] = current.레벨;
+  });
 
   return nextState;
 };
