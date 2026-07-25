@@ -53,14 +53,37 @@ const 기본스테이터스 = {
   구현무기: '없음',
 };
 
+const 반응형스테이터스 = (저장값 = {}) => {
+  const 결과 = {
+    ...기본스테이터스,
+    ...저장값,
+    스킬: Array.isArray(저장값.스킬) ? [...저장값.스킬] : [],
+  };
+
+  let 현재레벨 = getStatusForLevel(저장값.레벨).레벨;
+
+  Object.defineProperty(결과, '레벨', {
+    enumerable: true,
+    configurable: true,
+    get: () => 현재레벨,
+    set: (value) => {
+      const 레벨능력치 = getStatusForLevel(value);
+      현재레벨 = 레벨능력치.레벨;
+      능력치목록.forEach((key) => {
+        결과[key] = 레벨능력치[key];
+      });
+    },
+  });
+
+  결과.레벨 = 현재레벨;
+  return 결과;
+};
+
 export const createInitialGameState = () => ({
   currentChapter: 1,
   currentScene: '프롤로그_제목',
 
-  status: {
-    ...기본스테이터스,
-    스킬: [...기본스테이터스.스킬],
-  },
+  status: 반응형스테이터스(),
 
   affection: { ...주요인물기본값 },
   trust: { ...주요인물기본값 },
@@ -88,16 +111,7 @@ const 합치기 = (기본값, 저장값 = {}, 이름변환 = {}) => {
   return 결과;
 };
 
-const 스테이터스합치기 = (저장값 = {}) => {
-  const 레벨능력치 = getStatusForLevel(저장값.레벨);
-
-  return {
-    ...기본스테이터스,
-    ...저장값,
-    ...레벨능력치,
-    스킬: Array.isArray(저장값.스킬) ? 저장값.스킬 : [],
-  };
-};
+const 스테이터스합치기 = (저장값 = {}) => 반응형스테이터스(저장값);
 
 export const normalizeGameState = (savedState = {}) => {
   const 기본상태 = createInitialGameState();
@@ -118,17 +132,10 @@ export const updateStatus = (state, changes = {}) => {
   const nextState = normalizeGameState(structuredClone(state));
   const current = nextState.status;
 
-  if (Number.isFinite(changes.레벨)) {
-    Object.assign(current, getStatusForLevel(changes.레벨));
-  }
-
+  if (Number.isFinite(changes.레벨)) current.레벨 = changes.레벨;
   if (typeof changes.이름 === 'string') current.이름 = changes.이름;
   if (typeof changes.구현무기 === 'string') current.구현무기 = changes.구현무기;
   if (Array.isArray(changes.스킬)) current.스킬 = [...changes.스킬];
-
-  능력치목록.forEach((key) => {
-    current[key] = current.레벨;
-  });
 
   return nextState;
 };
