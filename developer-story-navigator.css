@@ -1,0 +1,68 @@
+.vn-title-mark[role="button"] {
+  cursor: default;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.developer-panel__notice p {
+  color: rgba(223, 240, 255, .72);
+}
+
+.developer-chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.developer-panel .developer-chapter-button {
+  display: grid;
+  gap: 6px;
+  min-height: 74px;
+  padding: 14px;
+  text-align: left;
+  border: 1px solid rgba(104, 184, 255, .32);
+  background: linear-gradient(180deg, rgba(31, 85, 139, .28), rgba(7, 20, 39, .72));
+}
+
+.developer-chapter-button strong {
+  color: #91d1ff;
+  font-size: 13px;
+  letter-spacing: .08em;
+}
+
+.developer-chapter-button span {
+  color: rgba(244, 250, 255, .86);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.developer-chapter-button:active {
+  transform: translateY(1px);
+  background: rgba(38, 101, 165, .42);
+}
+
+.developer-preview-badge {
+  position: absolute;
+  z-index: 90;
+  left: 50%;
+  top: calc(max(12px, env(safe-area-inset-top)) + 38px);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 28px);
+  padding: 7px 12px;
+  border: 1px solid rgba(105, 190, 255, .38);
+  border-radius: 999px;
+  color: rgba(221, 241, 255, .86);
+  background: rgba(4, 18, 37, .84);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .28);
+  font-size: 11px;
+  letter-spacing: .03em;
+  text-align: center;
+  pointer-events: none;
+}
+
+@media (min-width: 700px) {
+  .developer-chapter-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
