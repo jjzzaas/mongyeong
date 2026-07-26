@@ -77,3 +77,7 @@ export const createChapterNavigator = ({ chapters = [], onSelectChapter, onClose
 export const openChapterNavigator = (panel) => {
   panel.hidden = false;
 };
+
+// 기존 엔진 호출명은 호감도 전용 패널로 연결한다.
+export const createDeveloperPanel = createAffectionPanel;
+export const openDeveloperPanel = openAffectionPanel;
