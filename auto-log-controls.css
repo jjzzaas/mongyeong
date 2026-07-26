@@ -1,0 +1,24 @@
+.vn-auto-btn {
+  min-width: 54px;
+  letter-spacing: .06em;
+  transition: border-color .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+.vn-auto-btn.is-active {
+  border-color: rgba(135, 216, 255, .9);
+  color: #f4fbff;
+  background: linear-gradient(180deg, rgba(66, 166, 255, .38), rgba(25, 94, 170, .28));
+  box-shadow: 0 0 0 1px rgba(125, 207, 255, .18), 0 0 18px rgba(62, 163, 255, .32);
+}
+
+.vn-auto-btn.is-active::after {
+  content: ' ON';
+  color: #9fe0ff;
+  font-size: .82em;
+}
+
+@media (max-width: 520px) {
+  .vn-auto-btn {
+    min-width: 50px;
+  }
+}
