@@ -8,7 +8,7 @@ function isHidden(element) {
 
 function setupAutoAndLogControls() {
   const shell = document.querySelector('.vn-shell');
-  const controls = document.querySelector('.vn-controls');
+  const autoButton = document.querySelector('#autoModeButton');
   const logButton = document.querySelector('#logButton');
   const logPanel = document.querySelector('#dialogueLog');
   const logContent = document.querySelector('#dialogueLogContent');
@@ -19,16 +19,7 @@ function setupAutoAndLogControls() {
   const startScreen = document.querySelector('#startScreen');
   const developerPanel = document.querySelector('.developer-panel');
 
-  if (!shell || !controls || !logButton || !logPanel || !logContent || !choices || !centerText || !dialogue || !text || !startScreen) return;
-
-  const autoButton = document.createElement('button');
-  autoButton.type = 'button';
-  autoButton.id = 'autoButton';
-  autoButton.className = 'vn-btn vn-auto-btn';
-  autoButton.setAttribute('aria-pressed', 'false');
-  autoButton.setAttribute('aria-label', '자동 진행 켜기');
-  autoButton.textContent = 'AUTO';
-  controls.insertBefore(autoButton, logButton);
+  if (!shell || !autoButton || !logButton || !logPanel || !logContent || !choices || !centerText || !dialogue || !text || !startScreen) return;
 
   let autoEnabled = localStorage.getItem(AUTO_STATE_KEY) === 'true';
   let lastText = '';
@@ -49,9 +40,8 @@ function setupAutoAndLogControls() {
     renderAutoState();
   }
 
-  autoButton.addEventListener('click', (event) => {
-    event.stopPropagation();
-    setAutoEnabled(!autoEnabled);
+  autoButton.addEventListener('click', () => {
+    setAutoEnabled(autoButton.classList.contains('is-active'));
   });
 
   function shouldSuspendAuto() {
