@@ -95,11 +95,6 @@ function setupAutoAndLogControls() {
     });
   });
 
-  const logObserver = new MutationObserver(() => {
-    if (!isHidden(logPanel)) showNewestLogFirst();
-  });
-  logObserver.observe(logContent, { childList: true });
-
   renderAutoState();
 }
 
