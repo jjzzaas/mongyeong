@@ -67,6 +67,10 @@ function updateChapterIndicator(gameState = getSavedGameState()) {
   if (!titleMark) return;
 
   const chapter = Math.max(1, Number(gameState.currentChapter) || 1);
+  const currentChapter = titleMark.dataset.chapter;
+  if (currentChapter === String(chapter) && titleMark.querySelector('.vn-title-mark__chapter')) return;
+
+  titleMark.dataset.chapter = String(chapter);
   titleMark.innerHTML = `
     <span class="vn-title-mark__name">夢境 : 잠든 세계</span>
     <span class="vn-title-mark__chapter">CHAPTER ${chapter}</span>
@@ -115,7 +119,7 @@ function replaceLegacyStatusText() {
   if (!plainText.startsWith('스테이터스')) return;
 
   const status = readCurrentStatus();
-  centerText.textContent = [
+  const nextText = [
     '스테이터스',
     '',
     `이름  ${status.name}`,
@@ -126,6 +130,8 @@ function replaceLegacyStatusText() {
     `스킬  ${status.skill}`,
     `구현 무기  ${status.weapon}`,
   ].join('\n');
+
+  if (centerText.textContent !== nextText) centerText.textContent = nextText;
 }
 
 function installChapterIndicatorStyle() {
@@ -160,12 +166,16 @@ updateChapterIndicator();
 
 const app = document.querySelector('#app');
 if (app) {
+  let queued = false;
   const observer = new MutationObserver(() => {
+    if (queued) return;
+    queued = true;
     queueMicrotask(() => {
+      queued = false;
       replaceLegacyStatusText();
       updateChapterIndicator();
     });
   });
-  observer.observe(app, { childList: true, subtree: true, characterData: true, attributes: true });
+  observer.observe(app, { childList: true, subtree: true });
   replaceLegacyStatusText();
 }
