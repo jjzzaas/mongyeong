@@ -1,4 +1,4 @@
-.haru-default-portrait {
+.character-default-portrait {
   position: absolute;
   left: 50%;
   bottom: calc(max(8px, env(safe-area-inset-bottom)) + 48px);
@@ -16,15 +16,32 @@
   filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.24));
 }
 
-.haru-default-portrait.is-visible {
+.character-default-portrait.is-visible {
   opacity: 1;
   visibility: visible;
 }
 
+/* 원본 이미지의 여백과 체형 차이를 보정해 같은 화면 안에서 안정적으로 보이게 한다. */
+.character-momo {
+  height: min(79svh, 920px);
+}
+
+.character-sena {
+  height: min(83svh, 990px);
+}
+
 @media (max-width: 480px) {
-  .haru-default-portrait {
+  .character-default-portrait {
     bottom: calc(max(7px, env(safe-area-inset-bottom)) + 42px);
     height: min(80svh, 900px);
     max-width: 104vw;
+  }
+
+  .character-momo {
+    height: min(77svh, 850px);
+  }
+
+  .character-sena {
+    height: min(81svh, 920px);
   }
 }
