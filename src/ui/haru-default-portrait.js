@@ -1,47 +1,77 @@
-const HARU_IMAGE_PATH = './public/images/characters/haru/file_0000000068a48206b6b471ee80304517.png';
+const CHARACTER_PORTRAITS = [
+  {
+    name: '하루',
+    path: './public/images/characters/haru/file_0000000068a48206b6b471ee80304517.png',
+    alt: '하루 기본 일러스트',
+  },
+  {
+    name: '모모',
+    path: './public/images/characters/momo/file_00000000ee508206985aef654422f2cf.png',
+    alt: '모모 기본 일러스트',
+  },
+  {
+    name: '세나',
+    path: './public/images/characters/sena/file_00000000e99482069a3458ed24672560.png',
+    alt: '세나 기본 일러스트',
+  },
+];
 
-function mountHaruPortrait() {
+function mountCharacterPortraits() {
   const shell = document.querySelector('.vn-shell');
   const speaker = document.querySelector('#speaker');
   const dialogue = document.querySelector('#dialogue');
 
   if (!shell || !speaker || !dialogue) return false;
-  if (shell.querySelector('.haru-default-portrait')) return true;
-
-  const portrait = document.createElement('img');
-  portrait.className = 'haru-default-portrait';
-  portrait.src = HARU_IMAGE_PATH;
-  portrait.alt = '하루 기본 일러스트';
-  portrait.setAttribute('aria-hidden', 'true');
+  if (shell.querySelector('.character-default-portrait')) return true;
 
   const vignette = shell.querySelector('.vn-vignette');
-  shell.insertBefore(portrait, vignette || shell.firstChild);
+  const portraits = CHARACTER_PORTRAITS.map((character) => {
+    const portrait = document.createElement('img');
+    portrait.className = `character-default-portrait character-${character.name === '하루' ? 'haru' : character.name === '모모' ? 'momo' : 'sena'}`;
+    portrait.src = character.path;
+    portrait.alt = character.alt;
+    portrait.dataset.characterName = character.name;
+    portrait.setAttribute('aria-hidden', 'true');
+    shell.insertBefore(portrait, vignette || shell.firstChild);
+    return portrait;
+  });
 
-  const syncPortrait = () => {
+  const syncPortraits = () => {
     const speakerName = speaker.textContent.trim();
     const dialogueVisible = !dialogue.classList.contains('vn-hidden');
-    portrait.classList.toggle('is-visible', speakerName === '하루' && dialogueVisible);
+
+    portraits.forEach((portrait) => {
+      const isCurrentSpeaker = portrait.dataset.characterName === speakerName;
+      portrait.classList.toggle('is-visible', isCurrentSpeaker && dialogueVisible);
+    });
   };
 
-  new MutationObserver(syncPortrait).observe(speaker, {
+  new MutationObserver(syncPortraits).observe(speaker, {
     childList: true,
     characterData: true,
     subtree: true,
   });
 
-  new MutationObserver(syncPortrait).observe(dialogue, {
+  new MutationObserver(syncPortraits).observe(dialogue, {
     attributes: true,
     attributeFilter: ['class'],
   });
 
-  portrait.addEventListener('load', syncPortrait, { once: true });
-  syncPortrait();
+  portraits.forEach((portrait) => {
+    portrait.addEventListener('load', syncPortraits, { once: true });
+    portrait.addEventListener('error', () => {
+      portrait.classList.remove('is-visible');
+      console.warn(`캐릭터 일러스트를 불러오지 못했습니다: ${portrait.src}`);
+    });
+  });
+
+  syncPortraits();
   return true;
 }
 
-if (!mountHaruPortrait()) {
+if (!mountCharacterPortraits()) {
   const appObserver = new MutationObserver(() => {
-    if (mountHaruPortrait()) appObserver.disconnect();
+    if (mountCharacterPortraits()) appObserver.disconnect();
   });
 
   appObserver.observe(document.body, {
