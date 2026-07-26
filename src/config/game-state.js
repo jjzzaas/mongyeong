@@ -32,17 +32,19 @@ const 성향이름변환 = {
   냉정함: '냉정함',
 };
 
+export const STATUS_MULTIPLIER = 10;
 const 능력치목록 = ['힘', '민첩', '체력', '정신력'];
 
 export const getStatusForLevel = (level = 1) => {
   const safeLevel = Math.max(1, Math.floor(Number(level) || 1));
+  const statValue = safeLevel * STATUS_MULTIPLIER;
 
   return {
     레벨: safeLevel,
-    힘: safeLevel,
-    민첩: safeLevel,
-    체력: safeLevel,
-    정신력: safeLevel,
+    힘: statValue,
+    민첩: statValue,
+    체력: statValue,
+    정신력: statValue,
   };
 };
 
