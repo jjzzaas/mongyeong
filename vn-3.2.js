@@ -6,12 +6,13 @@ import { chapter005 } from './src/chapters/001-010/chapter-005.js';
 import { chapter006 } from './src/chapters/001-010/chapter-006.js';
 import { chapter007 } from './src/chapters/001-010/chapter-007.js';
 import { chapter008 } from './src/chapters/001-010/chapter-008.js';
+import { chapter009 } from './src/chapters/001-010/chapter-009.js';
 import { createInitialGameState, normalizeGameState, recordChoice } from './src/config/game-state.js';
 import { createDeveloperTapDetector, getDeveloperSnapshot } from './src/config/developer-mode.js';
 import { createDeveloperPanel, openDeveloperPanel } from './src/ui/developer-panel.js';
 
 const app = document.querySelector('#app');
-const chapters = [chapter001, chapter002, chapter003, chapter004, chapter005, chapter006, chapter007, chapter008];
+const chapters = [chapter001, chapter002, chapter003, chapter004, chapter005, chapter006, chapter007, chapter008, chapter009];
 const SAVE_KEY = 'mongyeong-vn-save-v2';
 const NORMAL_INPUT_GUARD_MS = 280;
 const CHOICE_INPUT_GUARD_MS = 550;
