@@ -8,11 +8,15 @@ import { chapter007 } from '../chapters/001-010/chapter-007.js';
 import { chapter008 } from '../chapters/001-010/chapter-008.js';
 import { chapter009 } from '../chapters/001-010/chapter-009.js';
 import { chapter010 } from '../chapters/001-010/chapter-010.js';
+import { chapter011 } from '../chapters/011-020/chapter-011.js';
+import { chapter012 } from '../chapters/011-020/chapter-012.js';
+import { chapter013 } from '../chapters/011-020/chapter-013.js';
+import { chapter014 } from '../chapters/011-020/chapter-014.js';
 import { createInitialGameState } from '../config/game-state.js';
 import { createDeveloperTapDetector } from '../config/developer-mode.js';
 import { createChapterNavigator, openChapterNavigator } from './developer-panel.js';
 
-const chapters = [chapter001, chapter002, chapter003, chapter004, chapter005, chapter006, chapter007, chapter008, chapter009, chapter010];
+const chapters = [chapter001, chapter002, chapter003, chapter004, chapter005, chapter006, chapter007, chapter008, chapter009, chapter010, chapter011, chapter012, chapter013, chapter014];
 const SAVE_KEY = 'mongyeong-vn-save-v2';
 const PREVIEW_KEY = 'mongyeong-developer-story-preview';
 const BACKUP_KEY = 'mongyeong-developer-save-backup';
