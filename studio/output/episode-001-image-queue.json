@@ -1,0 +1,52 @@
+{
+  "engine": "Dream Studio Image Engine v1",
+  "episode": 1,
+  "status": "READY_TO_GENERATE",
+  "rules": {
+    "aspectRatio": "9:16",
+    "resolution": "1080x1920",
+    "playerFaceVisible": false,
+    "preserveCharacterDesign": true,
+    "preserveWeaponsAndCostume": true,
+    "textInsideImage": false,
+    "outputFormat": "png"
+  },
+  "jobs": [
+    {
+      "jobId": "EP001_IMG_01",
+      "cutIds": [5],
+      "assetId": "CG_EP001_HOUND_CHARGE_v1",
+      "subject": "D급 악몽 들개 돌진",
+      "references": ["MON_D_HOUND", "BG_FOREST", "PLAYER_POV"],
+      "status": "READY_TO_GENERATE"
+    },
+    {
+      "jobId": "EP001_IMG_02",
+      "cutIds": [6],
+      "assetId": "CG_EP001_PLAYER_FALL_v1",
+      "subject": "주인공이 넘어져 공격을 막는 1인칭 장면",
+      "references": ["PLAYER_POV", "MON_D_HOUND", "BG_FOREST"],
+      "status": "READY_TO_GENERATE"
+    },
+    {
+      "jobId": "EP001_IMG_03",
+      "cutIds": [10],
+      "assetId": "CG_EP001_LIGHT_ARROW_HIT_v1",
+      "subject": "하루의 빛의 화살이 악몽에 명중",
+      "references": ["CHAR_HARU_SHEET", "MON_D_HOUND", "BG_FOREST"],
+      "status": "READY_TO_GENERATE"
+    },
+    {
+      "jobId": "EP001_IMG_04",
+      "cutIds": [11,12],
+      "assetId": "CG_EP001_HARU_FIRST_MEETING_v1",
+      "subject": "하루와 주인공의 첫 대면",
+      "references": ["CHAR_HARU_KEY", "CHAR_HARU_SHEET", "BG_FOREST", "PLAYER_POV"],
+      "status": "READY_TO_GENERATE"
+    }
+  ],
+  "completionPolicy": {
+    "afterGeneration": ["quality_check", "rename", "upload_to_drive", "register_asset_db", "mark_complete"],
+    "rejectIf": ["wrong character face", "wrong costume", "wrong weapon", "player face visible", "text rendered in image", "landscape aspect ratio"]
+  }
+}
