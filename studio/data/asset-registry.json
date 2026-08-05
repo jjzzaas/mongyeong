@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "source": "Google Drive / 夢境 Studio DB / ASSET_LIBRARY",
+  "assets": {
+    "CHAR_HARU_KEY": {"category":"CHARACTER","subject":"하루 키비주얼","version":"v1","driveFileId":"1S58XePFQdjkgcCjo0v4zFz9ZndoohhIi","fileName":"CHAR_HARU_KEY_VISUAL_v1.png"},
+    "CHAR_HARU_SHEET": {"category":"CHARACTER","subject":"하루 설정시트","version":"v1","driveFileId":"1dwKjH_Pvl1YKLjMXwmFvpEfnbHcci6Lz","fileName":"CHAR_HARU_MASTER_SHEET_v1.png"},
+    "CHAR_SENA_KEY": {"category":"CHARACTER","subject":"세나 키비주얼","version":"v1","driveFileId":"1eCL2djRGMvZPjD0jlTpwosTrJHBp1ocQ","fileName":"CHAR_SENA_KEY_VISUAL_v1.png"},
+    "CHAR_MOMO_KEY": {"category":"CHARACTER","subject":"모모 키비주얼","version":"v1","driveFileId":"1DJP2yD_xXrNSupWCpmYSCS4iNXuJpbee","fileName":"CHAR_MOMO_KEY_VISUAL_v1.png"},
+    "CHAR_GM_KEY": {"category":"CHARACTER","subject":"길드장 키비주얼","version":"v1","driveFileId":"1Pn7tqdeoEQmgV5CdvrWjus6DVKBwFn4s","fileName":"CHAR_GUILDMASTER_KEY_VISUAL_v1.png"},
+    "MON_GRADE": {"category":"MONSTER","subject":"악몽 등급 도감","version":"v1","driveFileId":"19vZjik9wSKiYFasUoAtEfpkkLAOrp2LM","fileName":"MONSTER_GRADE_COMPENDIUM_v1.png"},
+    "MON_D_HOUND": {"category":"MONSTER","subject":"D급 악몽 들개","version":"v1","driveFileId":"1rUx5sztEdPqiwpdUdKx3YedyuLxOGVRS","fileName":"MONSTER_D_NIGHTMARE_HOUND_MASTER_v1.png"},
+    "PLAYER_POV": {"category":"PLAYER","subject":"주인공 1인칭 시점","version":"v1","driveFileId":"1MtFc4-1YVHLTFGhcip74cXq1y9y6qykk","fileName":"PLAYER_POV_MASTER_SHEET_v1.png"},
+    "BG_FOREST": {"category":"BACKGROUND","subject":"숲","version":"v1","driveFileId":"1mtQwCse8wQ2BPUsFOG-Rjco3vlIRpDVZ","fileName":"BG_FOREST_MASTER_SHEET_v1.png"},
+    "BG_GUILD": {"category":"BACKGROUND","subject":"길드 본관","version":"v1","driveFileId":"1AhRdOw7BL6RDePXuL3Zs5uksmM0VAmzT","fileName":"BG_GUILD_HEADQUARTERS_MASTER_SHEET_v1.png"},
+    "BG_CITY": {"category":"BACKGROUND","subject":"중앙도시","version":"v1","driveFileId":"1P1VEnSbyQCk8-dQ3KNzqpgJkpGt0IeVK","fileName":"BG_CENTRAL_CITY_MASTER_SHEET_v1.png"},
+    "BRAND_TITLE": {"category":"BRAND","subject":"夢境 : 잠든 세계 타이틀","version":"v1","driveFileId":"1V66uvNPWPyQAsl7Y1WpnLeMVokY1fINg","fileName":"BRAND_TITLE_SCREEN_v1.png"}
+  }
+}
