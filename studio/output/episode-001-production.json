@@ -1,0 +1,27 @@
+{
+  "engine": "Dream Studio Story Engine",
+  "engineVersion": "1.0.0",
+  "command": "1화 제작",
+  "episode": 1,
+  "title": "눈을 뜬 숲",
+  "format": "9:16 motion visual novel",
+  "durationSec": 60,
+  "status": "STORY_PACKAGE_READY",
+  "validation": {"passed": true, "errors": []},
+  "continuity": {
+    "playerFaceVisible": false,
+    "playerMemory": "상실",
+    "worldSecretDisclosure": false,
+    "monsterGrade": "D",
+    "firstCompanion": "하루"
+  },
+  "existingAssetIds": ["BRAND_TITLE","BG_FOREST","PLAYER_POV","MON_D_HOUND","CHAR_HARU_KEY"],
+  "missingVisuals": [
+    {"id":"CG_EP001_HOUND_CHARGE","reason":"설정시트가 아닌 실제 돌진 장면 필요","priority":"HIGH"},
+    {"id":"CG_EP001_PLAYER_FALL","reason":"1인칭 피격·넘어짐 장면 필요","priority":"HIGH"},
+    {"id":"CG_EP001_LIGHT_ARROW_HIT","reason":"하루의 구원 장면 이벤트 CG 필요","priority":"HIGH"},
+    {"id":"CG_EP001_HARU_FIRST_MEET","reason":"숲에서 하루를 올려다보는 1인칭 장면 필요","priority":"MEDIUM"}
+  ],
+  "cutCount": 12,
+  "nextStage": "missingVisuals 이미지 생성 후 영상 편집 패키지 생성"
+}
